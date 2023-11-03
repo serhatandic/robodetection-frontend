@@ -1,7 +1,10 @@
 const ImageStream = () => {
 	return (
 		<div className='border-2 w-full h-full border-black'>
-			<img src='/assets/adamgibiadam.jpeg' />
+			<img
+				className='max-h-52 md:max-h-none'
+				src='/assets/adamgibiadam.jpeg'
+			/>
 		</div>
 	);
 };
