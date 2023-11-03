@@ -1,5 +1,11 @@
+import Layout from './components/Layout';
+
 function App() {
-	return <div className='bg-pink-400 text-5xl'>hello world</div>;
+	return (
+		<div className=''>
+			<Layout />
+		</div>
+	);
 }
 
 export default App;
