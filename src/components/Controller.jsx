@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
+import PropTypes from 'prop-types';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { IconButton } from '@mui/material';
 
-const Controller = () => {
+const Controller = ({ trackable }) => {
 	// create a ref (reference) for each button
 	// ref.current is the corresponding button
 	const upRef = useRef(null);
@@ -99,12 +100,14 @@ const Controller = () => {
 							<tr>
 								<th className='p-2'>Speed</th>
 								<th className='p-2'>Direction</th>
+								<th className='p-2'>Tracking</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr>
 								<td className='p-2'>0.0</td>
 								<td className='p-2'>0.0</td>
+								<td className='p-2'>{trackable}</td>
 							</tr>
 						</tbody>
 					</table>
@@ -142,6 +145,10 @@ const Controller = () => {
 			</div>
 		</div>
 	);
+};
+
+Controller.propTypes = {
+	trackable: PropTypes.string,
 };
 
 export default Controller;

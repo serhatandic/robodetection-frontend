@@ -1,4 +1,5 @@
 import { DataGrid } from '@mui/x-data-grid';
+import PropTypes from 'prop-types';
 
 const columns = [
 	{ field: 'id', headerName: 'ID', width: 70 },
@@ -33,12 +34,23 @@ const rows = [
 	{ id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
 ];
 
-function TrackablesList() {
+function TrackablesList({ setTrackable }) {
+	const handleCellClick = (params) => {
+		setTrackable(params.value);
+	};
 	return (
 		<div className='h-full overflow-auto'>
-			<DataGrid rows={rows} columns={columns} />
+			<DataGrid
+				rows={rows}
+				columns={columns}
+				onCellClick={handleCellClick}
+			/>
 		</div>
 	);
 }
+
+TrackablesList.propTypes = {
+	setTrackable: PropTypes.func.isRequired,
+};
 
 export default TrackablesList;
