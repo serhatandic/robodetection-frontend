@@ -12,7 +12,6 @@ const Layout = () => {
 			</div>
 			<div className='w-full h-full flex flex-col p-1 gap-2'>
 				<TrackablesList />
-
 				<Map />
 			</div>
 		</div>
