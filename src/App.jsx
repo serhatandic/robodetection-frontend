@@ -2,7 +2,7 @@ import Layout from './components/Layout';
 
 function App() {
 	return (
-		<div className=''>
+		<div className='h-screen w-screen p-4'>
 			<Layout />
 		</div>
 	);
