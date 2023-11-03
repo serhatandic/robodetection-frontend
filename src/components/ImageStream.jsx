@@ -1,9 +1,9 @@
 const ImageStream = () => {
 	return (
-		<div className='border-2 w-full h-full  border-black'>
+		<div className='border-2 w-full h-full  border-black overflow-hidden'>
 			<img
-				className='max-h-52 min-w-52 md:max-h-none'
-				src='/assets/adamgibiadam.jpeg'
+				className='w-full h-full object-contain'
+				src='/assets/robot-dog-vision.png'
 			/>
 		</div>
 	);
