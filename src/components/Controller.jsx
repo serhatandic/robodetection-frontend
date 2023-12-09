@@ -10,8 +10,12 @@ const UP = 'i'
 const LEFT = 'j'
 const DOWN = ','
 const RIGHT = 'l'
+const UPRIGHT = 'o'
+const UPLEFT = 'u'
+const DOWNLEFT = 'm'
+const DOWNRIGHT= '.'
 
-const Controller = ({ trackable }) => {
+const Controller = ({ trackable, connectionStatus }) => {
 	// create a ref (reference) for each button
 	// ref.current is the corresponding button
 	const upRef = useRef(null);
@@ -19,7 +23,7 @@ const Controller = ({ trackable }) => {
 	const downRef = useRef(null);
 	const rightRef = useRef(null);
 
-	const [currentPressedButton, setCurrentPressedButton] = useState(null);
+	const [pressedKeys, setPressedKeys] = useState(new Set());
 
 	const sendRequest = async (key) => {
 		const resp = await fetch('http://144.122.71.16:8080/command', {
@@ -33,66 +37,80 @@ const Controller = ({ trackable }) => {
 	}
 
 	const handleRequest = async (key) => {
-		setTimeout(() => {
-			for (let i = 0; i < 3; i++){
-				sendRequest(key)
-			}
-		}, 100);
+		sendRequest(key)
+		
 	}
-	
-	const handleKeyDown = (event) => {
-		// handles key presses
-		switch (event.key) {
-			// focus on the button that corresponds to the key pressed
-			case 'ArrowUp':
-				handleRequest(UP)
-				upRef.current?.focus();
-				setCurrentPressedButton('ArrowUp');
-				break;
-			case 'ArrowLeft':
-				handleRequest(LEFT)
-				leftRef.current?.focus();
-				setCurrentPressedButton('ArrowLeft');
-				break;
-			case 'ArrowDown':
-				handleRequest(DOWN)
-				downRef.current?.focus();
-				setCurrentPressedButton('ArrowDown');
-				break;
-			case 'ArrowRight':
-				handleRequest(RIGHT)
-				rightRef.current?.focus();
-				setCurrentPressedButton('ArrowRight');
-				break;
-			default:
-				break;
-		}
-	};
 
-	const handleKeyUp = (e) => {
-		// handles key releases
-		switch (e.key) {
+	const handleKeyDown = (event) => {
+		setPressedKeys(prev => new Set(prev).add(event.key));
+	};
+	
+	const handleKeyUp = (event) => {
+		setPressedKeys(prev => {
+			const newSet = new Set(prev);
+			newSet.delete(event.key);
+			return newSet;
+		});
+
+		switch (event.key) {
 			// remove focus from the button that corresponds to the key released
 			case 'ArrowUp':
 				upRef.current?.blur();
-				setCurrentPressedButton(null);
 				break;
 			case 'ArrowLeft':
 				leftRef.current?.blur();
-				setCurrentPressedButton(null);
 				break;
 			case 'ArrowDown':
 				downRef.current?.blur();
-				setCurrentPressedButton(null);
 				break;
 			case 'ArrowRight':
 				rightRef.current?.blur();
-				setCurrentPressedButton(null);
 				break;
 			default:
 				break;
 		}
+
 	};
+
+	const checkCombinations = () => {
+		// Handle UPRIGHT
+		if (pressedKeys.has('ArrowUp') && pressedKeys.has('ArrowRight')) {
+			handleRequest(UPRIGHT)
+		}
+		else if (pressedKeys.has('ArrowUp') && pressedKeys.has('ArrowLeft')) {
+			handleRequest(UPLEFT)
+		}
+		else if (pressedKeys.has('ArrowDown') && pressedKeys.has('ArrowLeft')) {
+			handleRequest(DOWNLEFT)
+		}
+		else if (pressedKeys.has('ArrowDown') && pressedKeys.has('ArrowRight')) {
+			handleRequest(DOWNRIGHT)
+		}
+		else if (pressedKeys.has('ArrowUp')) {
+			handleRequest(UP)
+			upRef.current?.focus();
+		}
+		else if (pressedKeys.has('ArrowDown')) {
+			handleRequest(DOWN)
+			downRef.current?.focus();
+		}
+		else if (pressedKeys.has('ArrowLeft')) {
+			handleRequest(LEFT)
+			leftRef.current?.focus();
+		}
+		else if (pressedKeys.has('ArrowRight')) {
+			handleRequest(RIGHT)
+			rightRef.current?.focus();
+		}
+	};
+
+	
+
+	useEffect(() => {
+		checkCombinations();
+		console.log(pressedKeys)
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [pressedKeys]);
 
 	useEffect(() => {
 		// everything in this effect will fire when component mounts, only once.
@@ -110,7 +128,6 @@ const Controller = ({ trackable }) => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-		console.log(currentPressedButton)
 	return (
 		<div className='border-2 w-full h-1/4 border-black flex justify-between'>
 			<div className='overflow-auto h-full w-full'>
@@ -147,24 +164,24 @@ const Controller = ({ trackable }) => {
 			</div>
 			<div className='border-l-2 border-black w-1/3 h-full flex flex-col justify-center'>
 				<div className='flex justify-center items-center text-xl'>
-					<IconButton ref={upRef} onClick={() => {
+					<IconButton disabled={connectionStatus === 'failed'} ref={upRef} onClick={() => {
 						handleRequest(UP)
 					}}>
 						<KeyboardArrowUpIcon />
 					</IconButton>
 				</div>
 				<div className='flex justify-center items-center'>
-					<IconButton ref={leftRef}>
+					<IconButton disabled={connectionStatus === 'failed'} ref={leftRef}>
 						<KeyboardArrowLeftIcon onClick={() => {
 						handleRequest(LEFT)
 					}}/>
 					</IconButton>
-					<IconButton ref={downRef}>
+					<IconButton disabled={connectionStatus === 'failed'} ref={downRef}>
 						<KeyboardArrowDownIcon onClick={() => {
 						handleRequest(DOWN)
 					}}/>
 					</IconButton>
-					<IconButton ref={rightRef}>
+					<IconButton disabled={connectionStatus === 'failed'} ref={rightRef}>
 						<KeyboardArrowRightIcon onClick={() => {
 						handleRequest(RIGHT)
 					}}/>
@@ -177,6 +194,7 @@ const Controller = ({ trackable }) => {
 
 Controller.propTypes = {
 	trackable: PropTypes.string,
+	connectionStatus: PropTypes.string,
 };
 
 export default Controller;
