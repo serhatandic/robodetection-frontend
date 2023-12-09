@@ -8,7 +8,7 @@ import { IconButton } from '@mui/material';
 
 const UP = 'i'
 const LEFT = 'j'
-const DOWN = 'm'
+const DOWN = ','
 const RIGHT = 'l'
 
 const Controller = ({ trackable }) => {
