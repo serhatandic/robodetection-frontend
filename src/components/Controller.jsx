@@ -6,6 +6,11 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { IconButton } from '@mui/material';
 
+const UP = 'i'
+const LEFT = 'j'
+const DOWN = 'm'
+const RIGHT = 'l'
+
 const Controller = ({ trackable }) => {
 	// create a ref (reference) for each button
 	// ref.current is the corresponding button
@@ -40,22 +45,22 @@ const Controller = ({ trackable }) => {
 		switch (event.key) {
 			// focus on the button that corresponds to the key pressed
 			case 'ArrowUp':
-				handleRequest('i')
+				handleRequest(UP)
 				upRef.current?.focus();
 				setCurrentPressedButton('ArrowUp');
 				break;
 			case 'ArrowLeft':
-				handleRequest('j')
+				handleRequest(LEFT)
 				leftRef.current?.focus();
 				setCurrentPressedButton('ArrowLeft');
 				break;
 			case 'ArrowDown':
-				handleRequest('m')
+				handleRequest(DOWN)
 				downRef.current?.focus();
 				setCurrentPressedButton('ArrowDown');
 				break;
 			case 'ArrowRight':
-				handleRequest('l')
+				handleRequest(RIGHT)
 				rightRef.current?.focus();
 				setCurrentPressedButton('ArrowRight');
 				break;
@@ -152,19 +157,27 @@ const Controller = ({ trackable }) => {
 			</div>
 			<div className='border-l-2 border-black w-1/3 h-full flex flex-col justify-center'>
 				<div className='flex justify-center items-center text-xl'>
-					<IconButton ref={upRef}>
+					<IconButton ref={upRef} onClick={() => {
+						handleRequest(UP)
+					}}>
 						<KeyboardArrowUpIcon />
 					</IconButton>
 				</div>
 				<div className='flex justify-center items-center'>
 					<IconButton ref={leftRef}>
-						<KeyboardArrowLeftIcon />
+						<KeyboardArrowLeftIcon onClick={() => {
+						handleRequest(LEFT)
+					}}/>
 					</IconButton>
 					<IconButton ref={downRef}>
-						<KeyboardArrowDownIcon />
+						<KeyboardArrowDownIcon onClick={() => {
+						handleRequest(DOWN)
+					}}/>
 					</IconButton>
 					<IconButton ref={rightRef}>
-						<KeyboardArrowRightIcon />
+						<KeyboardArrowRightIcon onClick={() => {
+						handleRequest(RIGHT)
+					}}/>
 					</IconButton>
 				</div>
 			</div>
