@@ -104,21 +104,11 @@ const Controller = ({ trackable }) => {
 		return () => {
 			// handlekeydown will be removed from the event listener
 			window.removeEventListener('keydown', handleKeyDown);
+			window.removeEventListener('keyup', handleKeyUp);
+
 		};
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-
-	useEffect(() => {
-		// everything in this effect will fire when currentPressedButton changes
-
-		// if currentPressedButton is null, then no button is pressed
-		if (currentPressedButton === null) {
-			return;
-		}
-
-		// if currentPressedButton is not null, then a button is pressed
-		// TODO: pressed key will be send to the server here
-		console.log(currentPressedButton);
-	}, [currentPressedButton]);
 
 		console.log(currentPressedButton)
 	return (
