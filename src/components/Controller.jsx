@@ -16,23 +16,46 @@ const Controller = ({ trackable }) => {
 
 	const [currentPressedButton, setCurrentPressedButton] = useState(null);
 
+	const sendRequest = async (key) => {
+		const resp = await fetch('http://144.122.71.16:8080/command', {
+			method:'POST',
+			body: JSON.stringify({'key':key}), 
+			headers: {
+				"Content-Type": "application/json",
+			},
+		})
+		console.log(await resp.json())
+	}
+
+	const handleRequest = async (key) => {
+		setTimeout(() => {
+			for (let i = 0; i < 3; i++){
+				sendRequest(key)
+			}
+		}, 100);
+	}
+	
 	const handleKeyDown = (event) => {
 		// handles key presses
 		switch (event.key) {
 			// focus on the button that corresponds to the key pressed
 			case 'ArrowUp':
+				handleRequest('i')
 				upRef.current?.focus();
 				setCurrentPressedButton('ArrowUp');
 				break;
 			case 'ArrowLeft':
+				handleRequest('j')
 				leftRef.current?.focus();
 				setCurrentPressedButton('ArrowLeft');
 				break;
 			case 'ArrowDown':
+				handleRequest('m')
 				downRef.current?.focus();
 				setCurrentPressedButton('ArrowDown');
 				break;
 			case 'ArrowRight':
+				handleRequest('l')
 				rightRef.current?.focus();
 				setCurrentPressedButton('ArrowRight');
 				break;
@@ -91,6 +114,8 @@ const Controller = ({ trackable }) => {
 		// TODO: pressed key will be send to the server here
 		console.log(currentPressedButton);
 	}, [currentPressedButton]);
+
+		console.log(currentPressedButton)
 	return (
 		<div className='border-2 w-full h-1/4 border-black flex justify-between'>
 			<div className='overflow-auto h-full w-full'>
