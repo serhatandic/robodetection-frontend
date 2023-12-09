@@ -26,14 +26,13 @@ const Controller = ({ trackable, connectionStatus }) => {
 	const [pressedKeys, setPressedKeys] = useState(new Set());
 
 	const sendRequest = async (key) => {
-		const resp = await fetch('http://144.122.71.16:8080/command', {
+		await fetch('http://144.122.71.16:8080/command', {
 			method:'POST',
 			body: JSON.stringify({'key':key}), 
 			headers: {
 				"Content-Type": "application/json",
 			},
 		})
-		console.log(await resp.json())
 	}
 
 	const handleRequest = async (key) => {
@@ -108,7 +107,6 @@ const Controller = ({ trackable, connectionStatus }) => {
 
 	useEffect(() => {
 		checkCombinations();
-		console.log(pressedKeys)
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [pressedKeys]);
 
