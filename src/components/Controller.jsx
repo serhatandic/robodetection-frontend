@@ -17,7 +17,7 @@ const Controller = ({ trackable }) => {
 	const [currentPressedButton, setCurrentPressedButton] = useState(null);
 
 	const sendRequest = async (key) => {
-		const resp = await fetch('http://144.122.71.16:8080/command', {
+		const resp = await fetch('https://144.122.71.16:8080/command', {
 			method:'POST',
 			body: JSON.stringify({'key':key}), 
 			headers: {
