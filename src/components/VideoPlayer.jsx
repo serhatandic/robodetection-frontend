@@ -10,6 +10,7 @@ const VideoPlayer = ({ videoUrl, handleVideoProgress }) => {
 			height='100%'
 			progressInterval={10}
 			onProgress={handleVideoProgress}
+			playing={true}
 		/>
 	);
 };

@@ -4,6 +4,8 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import LocationSearchingIcon from '@mui/icons-material/LocationSearching';
+import LocationDisabledIcon from '@mui/icons-material/LocationDisabled';
 import { IconButton } from '@mui/material';
 
 const UP = 'i';
@@ -15,7 +17,12 @@ const UPLEFT = 'u';
 const DOWNLEFT = 'm';
 const DOWNRIGHT = '.';
 
-const Controller = ({ trackable, connectionStatus }) => {
+const Controller = ({
+	trackable,
+	connectionStatus,
+	handleTrackStatus,
+	trackStatus,
+}) => {
 	// create a ref (reference) for each button
 	// ref.current is the corresponding button
 	const upRef = useRef(null);
@@ -136,7 +143,33 @@ const Controller = ({ trackable, connectionStatus }) => {
 							<tr>
 								<td className='p-2'>0.0</td>
 								<td className='p-2'>0.0</td>
-								<td className='p-2'>{trackable}</td>
+								<td className='p-2 flex justify-center'>
+									{trackable ? (
+										trackable
+									) : (
+										<>
+											{!trackStatus ? (
+												<IconButton
+													onClick={() => {
+														handleTrackStatus(true);
+													}}
+												>
+													<LocationSearchingIcon />
+												</IconButton>
+											) : (
+												<IconButton
+													onClick={() => {
+														handleTrackStatus(
+															false
+														);
+													}}
+												>
+													<LocationDisabledIcon />
+												</IconButton>
+											)}
+										</>
+									)}
+								</td>
 							</tr>
 						</tbody>
 					</table>
@@ -203,6 +236,8 @@ const Controller = ({ trackable, connectionStatus }) => {
 Controller.propTypes = {
 	trackable: PropTypes.string,
 	connectionStatus: PropTypes.string,
+	handleTrackStatus: PropTypes.func.isRequired,
+	trackStatus: PropTypes.bool.isRequired,
 };
 
 export default Controller;
