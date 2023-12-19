@@ -6,14 +6,14 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { IconButton } from '@mui/material';
 
-const UP = 'i'
-const LEFT = 'j'
-const DOWN = ','
-const RIGHT = 'l'
-const UPRIGHT = 'o'
-const UPLEFT = 'u'
-const DOWNLEFT = 'm'
-const DOWNRIGHT= '.'
+const UP = 'i';
+const LEFT = 'j';
+const DOWN = ',';
+const RIGHT = 'l';
+const UPRIGHT = 'o';
+const UPLEFT = 'u';
+const DOWNLEFT = 'm';
+const DOWNRIGHT = '.';
 
 const Controller = ({ trackable, connectionStatus }) => {
 	// create a ref (reference) for each button
@@ -27,25 +27,24 @@ const Controller = ({ trackable, connectionStatus }) => {
 
 	const sendRequest = async (key) => {
 		await fetch('http://144.122.71.16:8080/command', {
-			method:'POST',
-			body: JSON.stringify({'key':key}), 
+			method: 'POST',
+			body: JSON.stringify({ key: key }),
 			headers: {
-				"Content-Type": "application/json",
+				'Content-Type': 'application/json',
 			},
-		})
-	}
+		});
+	};
 
 	const handleRequest = async (key) => {
-		sendRequest(key)
-		
-	}
+		sendRequest(key);
+	};
 
 	const handleKeyDown = (event) => {
-		setPressedKeys(prev => new Set(prev).add(event.key));
+		setPressedKeys((prev) => new Set(prev).add(event.key));
 	};
-	
+
 	const handleKeyUp = (event) => {
-		setPressedKeys(prev => {
+		setPressedKeys((prev) => {
 			const newSet = new Set(prev);
 			newSet.delete(event.key);
 			return newSet;
@@ -68,46 +67,42 @@ const Controller = ({ trackable, connectionStatus }) => {
 			default:
 				break;
 		}
-
 	};
 
 	const checkCombinations = () => {
 		// Handle UPRIGHT
 		if (pressedKeys.has('ArrowUp') && pressedKeys.has('ArrowRight')) {
-			handleRequest(UPRIGHT)
-		}
-		else if (pressedKeys.has('ArrowUp') && pressedKeys.has('ArrowLeft')) {
-			handleRequest(UPLEFT)
-		}
-		else if (pressedKeys.has('ArrowDown') && pressedKeys.has('ArrowLeft')) {
-			handleRequest(DOWNLEFT)
-		}
-		else if (pressedKeys.has('ArrowDown') && pressedKeys.has('ArrowRight')) {
-			handleRequest(DOWNRIGHT)
-		}
-		else if (pressedKeys.has('ArrowUp')) {
-			handleRequest(UP)
+			handleRequest(UPRIGHT);
+		} else if (pressedKeys.has('ArrowUp') && pressedKeys.has('ArrowLeft')) {
+			handleRequest(UPLEFT);
+		} else if (
+			pressedKeys.has('ArrowDown') &&
+			pressedKeys.has('ArrowLeft')
+		) {
+			handleRequest(DOWNLEFT);
+		} else if (
+			pressedKeys.has('ArrowDown') &&
+			pressedKeys.has('ArrowRight')
+		) {
+			handleRequest(DOWNRIGHT);
+		} else if (pressedKeys.has('ArrowUp')) {
+			handleRequest(UP);
 			upRef.current?.focus();
-		}
-		else if (pressedKeys.has('ArrowDown')) {
-			handleRequest(DOWN)
+		} else if (pressedKeys.has('ArrowDown')) {
+			handleRequest(DOWN);
 			downRef.current?.focus();
-		}
-		else if (pressedKeys.has('ArrowLeft')) {
-			handleRequest(LEFT)
+		} else if (pressedKeys.has('ArrowLeft')) {
+			handleRequest(LEFT);
 			leftRef.current?.focus();
-		}
-		else if (pressedKeys.has('ArrowRight')) {
-			handleRequest(RIGHT)
+		} else if (pressedKeys.has('ArrowRight')) {
+			handleRequest(RIGHT);
 			rightRef.current?.focus();
 		}
 	};
 
-	
-
 	useEffect(() => {
 		checkCombinations();
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [pressedKeys]);
 
 	useEffect(() => {
@@ -121,9 +116,8 @@ const Controller = ({ trackable, connectionStatus }) => {
 			// handlekeydown will be removed from the event listener
 			window.removeEventListener('keydown', handleKeyDown);
 			window.removeEventListener('keyup', handleKeyUp);
-
 		};
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (
@@ -151,38 +145,54 @@ const Controller = ({ trackable, connectionStatus }) => {
 					{/*activity log*/}
 					<h2 className='ml-4 mt-2 font-bold'>Activity Log:</h2>
 					<div className='ml-4'>
-						<p>Dog started to walk {Math.random() * 1000000}</p>
+						{/* <p>Dog started to walk {Math.random() * 1000000}</p>
 						<p>Direction changed {Math.random() * 1000000}</p>
 						<p>Other log {Math.random() * 1000000}</p>
 						<p>Some other log {Math.random() * 1000000}</p>
 						<p>Loglog {Math.random() * 1000000}</p>
-						<p>Logologoglgogolg {Math.random() * 1000000}</p>
+						<p>Logologoglgogolg {Math.random() * 1000000}</p> */}
 					</div>
 				</div>
 			</div>
 			<div className='border-l-2 border-black w-1/3 h-full flex flex-col justify-center'>
 				<div className='flex justify-center items-center text-xl'>
-					<IconButton disabled={connectionStatus === 'failed'} ref={upRef} onClick={() => {
-						handleRequest(UP)
-					}}>
+					<IconButton
+						disabled={connectionStatus === 'failed'}
+						ref={upRef}
+						onClick={() => {
+							handleRequest(UP);
+						}}
+					>
 						<KeyboardArrowUpIcon />
 					</IconButton>
 				</div>
 				<div className='flex justify-center items-center'>
-					<IconButton disabled={connectionStatus === 'failed'} ref={leftRef}>
-						<KeyboardArrowLeftIcon onClick={() => {
-						handleRequest(LEFT)
-					}}/>
+					<IconButton
+						disabled={connectionStatus === 'failed'}
+						ref={leftRef}
+						onClick={() => {
+							handleRequest(LEFT);
+						}}
+					>
+						<KeyboardArrowLeftIcon />
 					</IconButton>
-					<IconButton disabled={connectionStatus === 'failed'} ref={downRef}>
-						<KeyboardArrowDownIcon onClick={() => {
-						handleRequest(DOWN)
-					}}/>
+					<IconButton
+						disabled={connectionStatus === 'failed'}
+						ref={downRef}
+						onClick={() => {
+							handleRequest(DOWN);
+						}}
+					>
+						<KeyboardArrowDownIcon />
 					</IconButton>
-					<IconButton disabled={connectionStatus === 'failed'} ref={rightRef}>
-						<KeyboardArrowRightIcon onClick={() => {
-						handleRequest(RIGHT)
-					}}/>
+					<IconButton
+						disabled={connectionStatus === 'failed'}
+						ref={rightRef}
+						onClick={() => {
+							handleRequest(RIGHT);
+						}}
+					>
+						<KeyboardArrowRightIcon />
 					</IconButton>
 				</div>
 			</div>
