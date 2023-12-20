@@ -36,7 +36,7 @@ const columns = [
 // 	{ id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
 // ];
 
-function TrackablesList({ setTrackable, videoProgress }) {
+function TrackablesList({ handleTrackableChange, videoProgress, trackStatus }) {
 	const [rows, setRows] = useState([]);
 
 	useEffect(() => {
@@ -44,11 +44,18 @@ function TrackablesList({ setTrackable, videoProgress }) {
 		handleVideoProgress(videoProgress);
 	}, [videoProgress]);
 
+	useEffect(() => {
+		if (!trackStatus) {
+			setRows([]);
+			return;
+		}
+	}, [trackStatus]);
+
 	const handleVideoProgress = (progress) => {
 		if (!progress) return;
 		const { playedSeconds } = progress;
 		if (!playedSeconds) return;
-		const playedSecondsFixed = playedSeconds.toFixed(2);
+		const playedSecondsFixed = playedSeconds.toFixed(0);
 		if (!trackData[playedSecondsFixed]) return;
 		setRows(() => {
 			const temp = [];
@@ -60,7 +67,7 @@ function TrackablesList({ setTrackable, videoProgress }) {
 	};
 
 	const handleCellClick = (params) => {
-		setTrackable(params.value);
+		handleTrackableChange(params.value);
 	};
 	return (
 		<div className='h-full overflow-auto'>
@@ -75,8 +82,9 @@ function TrackablesList({ setTrackable, videoProgress }) {
 }
 
 TrackablesList.propTypes = {
-	setTrackable: PropTypes.func.isRequired,
+	handleTrackableChange: PropTypes.func.isRequired,
 	videoProgress: PropTypes.object,
+	trackStatus: PropTypes.bool,
 };
 
 export default TrackablesList;

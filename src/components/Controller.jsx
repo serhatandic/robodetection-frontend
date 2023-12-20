@@ -4,9 +4,8 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import LocationSearchingIcon from '@mui/icons-material/LocationSearching';
-import LocationDisabledIcon from '@mui/icons-material/LocationDisabled';
 import { IconButton } from '@mui/material';
+import InfoSection from './InfoSection';
 
 const UP = 'i';
 const LEFT = 'j';
@@ -20,8 +19,8 @@ const DOWNRIGHT = '.';
 const Controller = ({
 	trackable,
 	connectionStatus,
-	handleTrackStatus,
 	trackStatus,
+	handleTrackStatus,
 }) => {
 	// create a ref (reference) for each button
 	// ref.current is the corresponding button
@@ -129,64 +128,11 @@ const Controller = ({
 
 	return (
 		<div className='border-2 w-full h-1/4 border-black flex justify-between'>
-			<div className='overflow-auto h-full w-full'>
-				<div>
-					<table className='ml-2 mt-2'>
-						<thead>
-							<tr>
-								<th className='p-2'>Speed</th>
-								<th className='p-2'>Direction</th>
-								<th className='p-2'>Tracking</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td className='p-2'>0.0</td>
-								<td className='p-2'>0.0</td>
-								<td className='p-2 flex justify-center'>
-									{trackable ? (
-										trackable
-									) : (
-										<>
-											{!trackStatus ? (
-												<IconButton
-													onClick={() => {
-														handleTrackStatus(true);
-													}}
-												>
-													<LocationSearchingIcon />
-												</IconButton>
-											) : (
-												<IconButton
-													onClick={() => {
-														handleTrackStatus(
-															false
-														);
-													}}
-												>
-													<LocationDisabledIcon />
-												</IconButton>
-											)}
-										</>
-									)}
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-				<div className='overflow-auto'>
-					{/*activity log*/}
-					<h2 className='ml-4 mt-2 font-bold'>Activity Log:</h2>
-					<div className='ml-4'>
-						{/* <p>Dog started to walk {Math.random() * 1000000}</p>
-						<p>Direction changed {Math.random() * 1000000}</p>
-						<p>Other log {Math.random() * 1000000}</p>
-						<p>Some other log {Math.random() * 1000000}</p>
-						<p>Loglog {Math.random() * 1000000}</p>
-						<p>Logologoglgogolg {Math.random() * 1000000}</p> */}
-					</div>
-				</div>
-			</div>
+			<InfoSection
+				trackable={trackable}
+				trackStatus={trackStatus}
+				handleTrackStatus={handleTrackStatus}
+			/>
 			<div className='border-l-2 border-black w-1/3 h-full flex flex-col justify-center'>
 				<div className='flex justify-center items-center text-xl'>
 					<IconButton
@@ -236,8 +182,8 @@ const Controller = ({
 Controller.propTypes = {
 	trackable: PropTypes.string,
 	connectionStatus: PropTypes.string,
-	handleTrackStatus: PropTypes.func.isRequired,
-	trackStatus: PropTypes.bool.isRequired,
+	trackStatus: PropTypes.bool,
+	handleTrackStatus: PropTypes.func,
 };
 
 export default Controller;

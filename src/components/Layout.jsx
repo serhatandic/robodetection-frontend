@@ -7,20 +7,28 @@ import PropTypes from 'prop-types';
 
 const Layout = ({ connectionStatus }) => {
 	const [trackable, setTrackable] = useState(null);
-	const [videoProgress, setVideoProgress] = useState();
 	const [trackStatus, setTrackStatus] = useState(false);
+
+	const [videoProgress, setVideoProgress] = useState();
 	const handleVideoProgress = (progress) => {
 		setVideoProgress(progress);
 	};
 
-	const handleTrackStatus = (value) => {
-		setTrackStatus(value);
+	const handleTrackStatus = (status) => {
+		setTrackStatus(status);
+		setTrackable(null);
 	};
+
+	const handleTrackableChange = (trackable) => {
+		setTrackable(trackable);
+	};
+
 	return (
 		<div className=' h-full w-full flex flex-col md:flex-row'>
 			<div className='w-full h-full flex flex-col p-1 gap-2'>
 				<ImageStream
 					handleVideoProgress={handleVideoProgress}
+					handleTrackStatus={handleTrackStatus}
 					trackStatus={trackStatus}
 				/>
 				<Controller
@@ -32,8 +40,9 @@ const Layout = ({ connectionStatus }) => {
 			</div>
 			<div className='w-full h-full flex flex-col p-1 gap-2'>
 				<TrackablesList
-					setTrackable={setTrackable}
+					handleTrackableChange={handleTrackableChange}
 					videoProgress={videoProgress}
+					trackStatus={trackStatus}
 				/>
 				<Map />
 			</div>
