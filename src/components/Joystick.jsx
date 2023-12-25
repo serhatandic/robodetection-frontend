@@ -33,7 +33,7 @@ const getDirection = (x, y) => {
 	//     angle += 360
 	// }
 
-	console.log('angle: ', angle);
+	// console.log('angle: ', angle);
 
 	if (angle > -22.5 && angle <= 22.5) {
 		return 'right';
@@ -64,8 +64,8 @@ const getDirection = (x, y) => {
 export const handleMove = (event) => {
 	const direction = getDirection(event.x, event.y);
 
-	console.log(event);
-	console.log('direction:', direction.toUpperCase());
+	// console.log(event);
+	// console.log('direction:', direction.toUpperCase());
 
 	if (direction == 'up') {
 		handleRequest(UP);
