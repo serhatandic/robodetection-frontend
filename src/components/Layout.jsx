@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import ImageStream from './ImageStream';
 import Map from './Map';
-import Controller from './Controller';
+import ControllerSection from './ControllerSection';
 import TrackablesList from './TrackablesList';
 import PropTypes from 'prop-types';
 
@@ -31,7 +31,7 @@ const Layout = ({ connectionStatus }) => {
 					handleTrackStatus={handleTrackStatus}
 					trackStatus={trackStatus}
 				/>
-				<Controller
+				<ControllerSection
 					connectionStatus={connectionStatus}
 					trackable={trackable}
 					handleTrackStatus={handleTrackStatus}

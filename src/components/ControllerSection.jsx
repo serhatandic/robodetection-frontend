@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { IconButton } from '@mui/material';
+import KeyboardController from './KeyboardController';
 import InfoSection from './InfoSection';
+import { Joystick } from 'react-joystick-component';
+import { handleStart, handleMove, handleStop } from './Joystick';
 
 const UP = 'i';
 const LEFT = 'j';
@@ -16,7 +14,7 @@ const UPLEFT = 'u';
 const DOWNLEFT = 'm';
 const DOWNRIGHT = '.';
 
-const Controller = ({
+const ControllerSection = ({
 	trackable,
 	connectionStatus,
 	trackStatus,
@@ -30,6 +28,7 @@ const Controller = ({
 	const rightRef = useRef(null);
 
 	const [pressedKeys, setPressedKeys] = useState(new Set());
+	const [inputMethod, setInputMethod] = useState('keyboard'); // Default to keyboard
 
 	const sendRequest = async (key) => {
 		await fetch('http://144.122.71.16:8080/command', {
@@ -106,6 +105,12 @@ const Controller = ({
 		}
 	};
 
+	const toggleInputMethod = () => {
+		setInputMethod((current) =>
+			current === 'keyboard' ? 'joystick' : 'keyboard'
+		);
+	};
+
 	useEffect(() => {
 		checkCombinations();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -126,64 +131,77 @@ const Controller = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	useEffect(() => {
+		const handleKeyDown = (event) => {
+			if (event.ctrlKey && event.key === 's') {
+				event.preventDefault(); // Prevents the default action of Ctrl + S
+				toggleInputMethod();
+			}
+		};
+
+		// Cleanup the event listener when the component unmounts
+		return () => {
+			document.removeEventListener('keydown', handleKeyDown);
+		};
+	}, []); //single run
+
 	return (
-		<div className='border-2 w-full h-1/4 border-black flex justify-between'>
-			<InfoSection
-				trackable={trackable}
-				trackStatus={trackStatus}
-				handleTrackStatus={handleTrackStatus}
-			/>
-			<div className='border-l-2 border-black w-1/3 h-full flex flex-col justify-center'>
-				<div className='flex justify-center items-center text-xl'>
-					<IconButton
-						disabled={connectionStatus === 'failed'}
-						ref={upRef}
-						onClick={() => {
-							handleRequest(UP);
-						}}
-					>
-						<KeyboardArrowUpIcon />
-					</IconButton>
-				</div>
-				<div className='flex justify-center items-center'>
-					<IconButton
-						disabled={connectionStatus === 'failed'}
-						ref={leftRef}
-						onClick={() => {
-							handleRequest(LEFT);
-						}}
-					>
-						<KeyboardArrowLeftIcon />
-					</IconButton>
-					<IconButton
-						disabled={connectionStatus === 'failed'}
-						ref={downRef}
-						onClick={() => {
-							handleRequest(DOWN);
-						}}
-					>
-						<KeyboardArrowDownIcon />
-					</IconButton>
-					<IconButton
-						disabled={connectionStatus === 'failed'}
-						ref={rightRef}
-						onClick={() => {
-							handleRequest(RIGHT);
-						}}
-					>
-						<KeyboardArrowRightIcon />
-					</IconButton>
-				</div>
+		<>
+			<div className='border-2 w-full h-2/5 border-black flex justify-between'>
+				<InfoSection
+					trackable={trackable}
+					trackStatus={trackStatus}
+					handleTrackStatus={handleTrackStatus}
+				/>
+				{inputMethod === 'keyboard' ? (
+					<KeyboardController
+						connectionStatus={connectionStatus}
+						handleRequest={handleRequest}
+						upRef={upRef}
+						leftRef={leftRef}
+						downRef={downRef}
+						rightRef={rightRef}
+					/>
+				) : (
+					<div className='border-l-2 border-black w-1/3 h-full flex flex-col justify-center items-center'>
+						<Joystick
+							size={150}
+							sticky={false}
+							baseColor='#87CEFA'
+							stickColor='#FF7F50'
+							start={handleStart}
+							move={handleMove}
+							stop={handleStop}
+						/>
+					</div>
+				)}
 			</div>
-		</div>
+			<button
+				onClick={toggleInputMethod}
+				style={{
+					backgroundColor: '#f0f0f0', // Soft light gray
+					color: '#333', // Darker text for contrast
+					border: 'none',
+					borderRadius: '15px', // Rounded corners
+					padding: '10px 20px', // Comfortable padding
+					cursor: 'pointer',
+					boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Subtle shadow for depth
+					fontSize: '1rem', // Reasonable font size
+					transition: 'all 0.3s ease', // Smooth transition for interactions
+				}}
+			>
+				Switch to {inputMethod === 'keyboard' ? 'Joystick' : 'Keyboard'}{' '}
+				(Ctrl+S)
+			</button>
+		</>
 	);
 };
 
-Controller.propTypes = {
+ControllerSection.propTypes = {
 	trackable: PropTypes.string,
 	connectionStatus: PropTypes.string,
 	trackStatus: PropTypes.bool,
 	handleTrackStatus: PropTypes.func,
 };
 
-export default Controller;
+export default ControllerSection;
