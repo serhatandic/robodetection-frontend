@@ -12,7 +12,7 @@ const ImageStream = ({ handleVideoProgress, trackStatus }) => {
 			{trackStatus && (
 				<div className='w-full h-full'>
 					<VideoPlayer
-						videoUrl='https://www.youtube.com/watch?v=ruowuNZRoSg'
+						videoUrl='https://www.youtube.com/watch?v=KyXvr5SV2zw'
 						handleVideoProgress={handleVideoProgress}
 					/>
 				</div>
