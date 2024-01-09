@@ -1,21 +1,45 @@
 import VideoPlayer from './VideoPlayer';
 import PropTypes from 'prop-types';
+import Button from '@mui/material/Button';
 
-const ImageStream = ({ handleVideoProgress, trackStatus }) => {
+const ImageStream = ({
+	handleVideoProgress,
+	trackStatus,
+	handleTrackStatus,
+}) => {
 	return (
-		<div className='border-2 w-full h-full  border-black overflow-hidden flex justify-center items-center'>
+		<div className='w-full h-full overflow-hidden flex justify-center items-center'>
 			{/* <img
 				className='w-full h-full object-cover'
 				src='/assets/robot-dog-vision.png'
 			/> */}
 
-			{trackStatus && (
-				<div className='w-full h-full'>
+			{trackStatus ? (
+				<div className='w-full h-full flex flex-col gap-2'>
 					<VideoPlayer
 						videoUrl='https://www.youtube.com/watch?v=KyXvr5SV2zw'
 						handleVideoProgress={handleVideoProgress}
 					/>
+					<div className='flex gap-2 items-center'>
+						<Button
+							variant='contained'
+							onClick={() => {
+								handleTrackStatus((prev) => !prev);
+							}}
+						>
+							Stop Tracking
+						</Button>
+					</div>
 				</div>
+			) : (
+				<Button
+					variant='contained'
+					onClick={() => {
+						handleTrackStatus((prev) => !prev);
+					}}
+				>
+					Start Tracking
+				</Button>
 			)}
 		</div>
 	);
@@ -24,6 +48,7 @@ const ImageStream = ({ handleVideoProgress, trackStatus }) => {
 ImageStream.propTypes = {
 	handleVideoProgress: PropTypes.func.isRequired,
 	trackStatus: PropTypes.bool.isRequired,
+	handleTrackStatus: PropTypes.func.isRequired,
 };
 
 export default ImageStream;

@@ -75,7 +75,6 @@ function TrackablesList({ handleTrackableChange, videoProgress, trackStatus }) {
 				rows={rows}
 				columns={columns}
 				onCellClick={handleCellClick}
-				rowHeight={20}
 			/>
 		</div>
 	);

@@ -8,7 +8,7 @@ const VideoPlayer = ({ videoUrl, handleVideoProgress }) => {
 			controls={true}
 			width='auto'
 			height='100%'
-			progressInterval={10}
+			progressInterval={100}
 			onProgress={handleVideoProgress}
 			playing={true}
 		/>

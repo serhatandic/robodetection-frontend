@@ -4,7 +4,7 @@ import KeyboardController from './KeyboardController';
 import InfoSection from './InfoSection';
 import { Joystick } from 'react-joystick-component';
 import { handleStart, handleMove, handleStop } from './Joystick';
-
+import Button from '@mui/material/Button';
 
 const UP = 'i';
 const LEFT = 'j';
@@ -27,6 +27,10 @@ const ControllerSection = ({
 	const leftRef = useRef(null);
 	const downRef = useRef(null);
 	const rightRef = useRef(null);
+	const upRightRef = useRef(null);
+	const upLeftRef = useRef(null);
+	const downLeftRef = useRef(null);
+	const downRightRef = useRef(null);
 
 	const [pressedKeys, setPressedKeys] = useState(new Set());
 	const [inputMethod, setInputMethod] = useState('keyboard'); // Default to keyboard
@@ -79,18 +83,22 @@ const ControllerSection = ({
 		// Handle UPRIGHT
 		if (pressedKeys.has('ArrowUp') && pressedKeys.has('ArrowRight')) {
 			handleRequest(UPRIGHT);
+			upRightRef.current?.focus();
 		} else if (pressedKeys.has('ArrowUp') && pressedKeys.has('ArrowLeft')) {
 			handleRequest(UPLEFT);
+			upLeftRef.current?.focus();
 		} else if (
 			pressedKeys.has('ArrowDown') &&
 			pressedKeys.has('ArrowLeft')
 		) {
 			handleRequest(DOWNLEFT);
+			downLeftRef.current?.focus();
 		} else if (
 			pressedKeys.has('ArrowDown') &&
 			pressedKeys.has('ArrowRight')
 		) {
 			handleRequest(DOWNRIGHT);
+			downRightRef.current?.focus();
 		} else if (pressedKeys.has('ArrowUp')) {
 			handleRequest(UP);
 			upRef.current?.focus();
@@ -148,23 +156,47 @@ const ControllerSection = ({
 
 	return (
 		<>
-			<div className='border-2 w-full h-2/5 border-black flex justify-between'>
+			<div className='flex gap-2'>
+				<div className=' bg-gray-100 flex items-center p-2 rounded-lg w-fit'>
+					Speed:
+				</div>
+				<div className=' bg-gray-100 flex items-center p-2 rounded-lg w-fit'>
+					Direction:
+				</div>
+				<div className=' bg-gray-100 flex items-center p-2 rounded-lg w-fit'>
+					Currently Tracking:
+				</div>
+			</div>
+			<div className='w-full h-2/5  flex justify-between'>
 				<InfoSection
 					trackable={trackable}
 					trackStatus={trackStatus}
 					handleTrackStatus={handleTrackStatus}
 				/>
 				{inputMethod === 'keyboard' ? (
-					<KeyboardController
-						connectionStatus={connectionStatus}
-						handleRequest={handleRequest}
-						upRef={upRef}
-						leftRef={leftRef}
-						downRef={downRef}
-						rightRef={rightRef}
-					/>
+					<div className='w-1/3 flex flex-col justify-between items-center ml-2 pt-8'>
+						<KeyboardController
+							connectionStatus={connectionStatus}
+							handleRequest={handleRequest}
+							upRef={upRef}
+							leftRef={leftRef}
+							downRef={downRef}
+							rightRef={rightRef}
+							upRightRef={upRightRef}
+							upLeftRef={upLeftRef}
+							downLeftRef={downLeftRef}
+							downRightRef={downRightRef}
+						/>
+						<Button
+							className='w-full'
+							variant='contained'
+							onClick={toggleInputMethod}
+						>
+							Switch to Joystick
+						</Button>
+					</div>
 				) : (
-					<div className='border-l-2 border-black w-1/3 h-full flex flex-col justify-center items-center'>
+					<div className='w-1/3 h-full flex flex-col justify-between items-center ml-2 pt-8'>
 						<Joystick
 							size={150}
 							sticky={false}
@@ -174,26 +206,16 @@ const ControllerSection = ({
 							move={handleMove}
 							stop={handleStop}
 						/>
+						<Button
+							className='w-full'
+							variant='contained'
+							onClick={toggleInputMethod}
+						>
+							Switch to Keyboard
+						</Button>
 					</div>
 				)}
 			</div>
-			<button
-				onClick={toggleInputMethod}
-				style={{
-					backgroundColor: '#f0f0f0', // Soft light gray
-					color: '#333', // Darker text for contrast
-					border: 'none',
-					borderRadius: '15px', // Rounded corners
-					padding: '10px 20px', // Comfortable padding
-					cursor: 'pointer',
-					boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // Subtle shadow for depth
-					fontSize: '1rem', // Reasonable font size
-					transition: 'all 0.3s ease', // Smooth transition for interactions
-				}}
-			>
-				Switch to {inputMethod === 'keyboard' ? 'Joystick' : 'Keyboard'}{' '}
-				(Ctrl+S)
-			</button>
 		</>
 	);
 };
