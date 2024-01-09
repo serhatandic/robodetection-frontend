@@ -5,6 +5,7 @@ import InfoSection from './InfoSection';
 import { Joystick } from 'react-joystick-component';
 import { handleStart, handleMove, handleStop } from './Joystick';
 
+
 const UP = 'i';
 const LEFT = 'j';
 const DOWN = ',';

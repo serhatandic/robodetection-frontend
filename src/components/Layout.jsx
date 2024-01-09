@@ -4,6 +4,7 @@ import Map from './Map';
 import ControllerSection from './ControllerSection';
 import TrackablesList from './TrackablesList';
 import PropTypes from 'prop-types';
+import GamepadController from './GamepadController';
 
 const Layout = ({ connectionStatus }) => {
 	const [trackable, setTrackable] = useState(null);
@@ -25,6 +26,7 @@ const Layout = ({ connectionStatus }) => {
 
 	return (
 		<div className=' h-full w-full flex flex-col md:flex-row'>
+			
 			<div className='w-full h-full flex flex-col p-1 gap-2'>
 				<ImageStream
 					handleVideoProgress={handleVideoProgress}
@@ -45,6 +47,10 @@ const Layout = ({ connectionStatus }) => {
 					trackStatus={trackStatus}
 				/>
 				<Map />
+				<GamepadController
+				controller={1}
+				style={{ position: 'fixed', bottom: 100, right: 100 }}
+				/>
 			</div>
 		</div>
 	);
