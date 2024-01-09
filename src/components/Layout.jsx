@@ -26,7 +26,6 @@ const Layout = ({ connectionStatus }) => {
 
 	return (
 		<div className=' h-full w-full flex flex-col md:flex-row'>
-			
 			<div className='w-full h-full flex flex-col p-1 gap-2'>
 				<ImageStream
 					handleVideoProgress={handleVideoProgress}
@@ -48,8 +47,8 @@ const Layout = ({ connectionStatus }) => {
 				/>
 				<Map />
 				<GamepadController
-				controller={1}
-				style={{ position: 'fixed', bottom: 100, right: 100 }}
+					controller={1}
+					style={{ position: 'fixed', bottom: 100, right: 100 }}
 				/>
 			</div>
 		</div>

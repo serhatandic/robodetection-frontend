@@ -1,6 +1,4 @@
 // this is the joystick component with custom handleMove, handleStop, and handleStart functions
-import useGamepads from "../hooks/useGamepads";
-import React, { useState } from "react";
 
 const UP = 'i';
 const LEFT = 'j';
@@ -24,7 +22,6 @@ const sendRequest = async (key) => {
 const handleRequest = async (key) => {
 	sendRequest(key);
 };
-
 
 // Additional function to calculate the direction based on x and y coordinates
 const getDirection = (x, y) => {
