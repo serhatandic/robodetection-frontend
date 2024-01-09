@@ -9,7 +9,6 @@ export default function GamepadController() {
 		useContext(GamepadsContext);
 
 	var haveEvents = 'ongamepadconnected' in window;
-
 	const addGamepad = (gamepad) => {
 		// console.log(
 		//   "Gamepad connected at index %d: %s. %d buttons, %d axes.",
@@ -113,9 +112,13 @@ export default function GamepadController() {
 
 	// console.log(globalGamepads);
 	return (
-		<div className='Gamepads'>
-			<h1>Gamepads</h1>
-			{gamepadDisplay}
-		</div>
+		<>
+			{Object.keys(gamepads).length() > 0 && (
+				<div className='Gamepads'>
+					<h1>Gamepads</h1>
+					{gamepadDisplay}
+				</div>
+			)}
+		</>
 	);
 }
