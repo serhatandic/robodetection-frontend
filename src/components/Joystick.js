@@ -9,8 +9,11 @@ const UPLEFT = 'u';
 const DOWNLEFT = 'm';
 const DOWNRIGHT = '.';
 
+const backendIP = import.meta.env.VITE_BACKEND_IP;
+const backendPort = import.meta.env.VITE_BACKEND_PORT;
+
 const sendRequest = async (key) => {
-	await fetch('http://144.122.71.16:8080/command', {
+	await fetch(`http://${backendIP}:${backendPort}/command`, {
 		method: 'POST',
 		body: JSON.stringify({ key: key }),
 		headers: {

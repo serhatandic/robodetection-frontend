@@ -1,6 +1,9 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 /* eslint-disable react/prop-types */
 
+const backendIP = import.meta.env.VITE_BACKEND_IP;
+const backendPort = import.meta.env.VITE_BACKEND_PORT;
+
 function GamepadSvg({
 	buttonLeft,
 	buttonUp,
@@ -20,7 +23,7 @@ function GamepadSvg({
 	...props
 }) {
 	const sendRequest = async (key) => {
-		await fetch('http://144.122.71.16:8080/command', {
+		await fetch(`http://${backendIP}:${backendPort}/command`, {
 			method: 'POST',
 			body: JSON.stringify({ key: key }),
 			headers: {

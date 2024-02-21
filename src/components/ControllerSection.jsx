@@ -15,6 +15,9 @@ const UPLEFT = 'u';
 const DOWNLEFT = 'm';
 const DOWNRIGHT = '.';
 
+const backendIP = import.meta.env.VITE_BACKEND_IP;
+const backendPort = import.meta.env.VITE_BACKEND_PORT;
+
 const ControllerSection = ({
 	trackable,
 	connectionStatus,
@@ -36,7 +39,7 @@ const ControllerSection = ({
 	const [inputMethod, setInputMethod] = useState('keyboard'); // Default to keyboard
 
 	const sendRequest = async (key) => {
-		await fetch('http://144.122.71.16:8080/command', {
+		await fetch(`http://${backendIP}:${backendPort}/command`, {
 			method: 'POST',
 			body: JSON.stringify({ key: key }),
 			headers: {
@@ -174,7 +177,7 @@ const ControllerSection = ({
 					handleTrackStatus={handleTrackStatus}
 				/>
 				{inputMethod === 'keyboard' ? (
-					<div className='w-1/3 flex flex-col justify-between items-center ml-2 pt-8'>
+					<div className='w-1/3 flex flex-col justify-between items-center ml-2'>
 						<KeyboardController
 							connectionStatus={connectionStatus}
 							handleRequest={handleRequest}
@@ -196,7 +199,7 @@ const ControllerSection = ({
 						</Button>
 					</div>
 				) : (
-					<div className='w-1/3 h-full flex flex-col justify-between items-center ml-2 pt-8'>
+					<div className='w-1/3 h-full flex flex-col justify-between items-center ml-2'>
 						<Joystick
 							size={150}
 							sticky={false}
