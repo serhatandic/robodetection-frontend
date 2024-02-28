@@ -37,6 +37,7 @@ const ControllerSection = ({
 
 	const [pressedKeys, setPressedKeys] = useState(new Set());
 	const [inputMethod, setInputMethod] = useState('keyboard'); // Default to keyboard
+	const keyIntervals = useRef({});
 
 	const sendRequest = async (key) => {
 		await fetch(`http://${backendIP}:${backendPort}/command`, {
@@ -53,18 +54,34 @@ const ControllerSection = ({
 	};
 
 	const handleKeyDown = (event) => {
+		// Avoid creating a new interval if the key is already being processed
+		if (keyIntervals.current[event.key]) return;
+
+		// Call setPressedKeys immediately for the first time
 		setPressedKeys((prev) => new Set(prev).add(event.key));
+
+		// Then, use setInterval to keep calling setPressedKeys every second
+		keyIntervals.current[event.key] = setInterval(() => {
+			setPressedKeys((prev) => new Set(prev).add(event.key));
+		}, 500);
 	};
 
 	const handleKeyUp = (event) => {
+		// Clear the interval for the released key
+		if (keyIntervals.current[event.key]) {
+			clearInterval(keyIntervals.current[event.key]);
+			delete keyIntervals.current[event.key]; // Clean up
+		}
+
+		// Proceed with your existing logic for removing the key from pressedKeys
 		setPressedKeys((prev) => {
 			const newSet = new Set(prev);
 			newSet.delete(event.key);
 			return newSet;
 		});
 
+		// Your switch statement for handling focus
 		switch (event.key) {
-			// remove focus from the button that corresponds to the key released
 			case 'ArrowUp':
 				upRef.current?.blur();
 				break;
@@ -139,6 +156,7 @@ const ControllerSection = ({
 			// handlekeydown will be removed from the event listener
 			window.removeEventListener('keydown', handleKeyDown);
 			window.removeEventListener('keyup', handleKeyUp);
+			Object.values(keyIntervals.current).forEach(clearInterval);
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);

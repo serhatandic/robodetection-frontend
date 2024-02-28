@@ -1,12 +1,8 @@
-import VideoPlayer from './VideoPlayer';
 import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
+import CameraImage from './CameraImage';
 
-const ImageStream = ({
-	handleVideoProgress,
-	trackStatus,
-	handleTrackStatus,
-}) => {
+const ImageStream = ({ trackStatus, handleTrackStatus }) => {
 	return (
 		<div className='w-full h-full overflow-hidden flex justify-center items-center'>
 			{/* <img
@@ -16,10 +12,11 @@ const ImageStream = ({
 
 			{trackStatus ? (
 				<div className='w-full h-full flex flex-col gap-2'>
-					<VideoPlayer
+					{/* <VideoPlayer
 						videoUrl='https://www.youtube.com/watch?v=KyXvr5SV2zw'
 						handleVideoProgress={handleVideoProgress}
-					/>
+					/> */}
+					<CameraImage />
 					<div className='flex gap-2 items-center'>
 						<Button
 							variant='contained'

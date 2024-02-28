@@ -12,6 +12,8 @@ const DOWNRIGHT = '.';
 const backendIP = import.meta.env.VITE_BACKEND_IP;
 const backendPort = import.meta.env.VITE_BACKEND_PORT;
 
+const intervals = {}; // Object to store intervals for each direction
+
 const sendRequest = async (key) => {
 	await fetch(`http://${backendIP}:${backendPort}/command`, {
 		method: 'POST',
@@ -23,7 +25,17 @@ const sendRequest = async (key) => {
 };
 
 const handleRequest = async (key) => {
-	sendRequest(key);
+	if (intervals[key]) return; // Prevent multiple intervals for the same key
+	intervals[key] = setInterval(() => {
+		for (let i = 0; i < 3; i++) {
+			sendRequest(key);
+		}
+	}, 1000); // Send request every second
+};
+
+const clearIntervals = () => {
+	Object.values(intervals).forEach(clearInterval); // Clear all intervals
+	for (let key in intervals) delete intervals[key]; // Reset the intervals object
 };
 
 // Additional function to calculate the direction based on x and y coordinates
@@ -67,39 +79,41 @@ const getDirection = (x, y) => {
 export const handleMove = (event) => {
 	const direction = getDirection(event.x, event.y);
 
-	// console.log(event);
-	// console.log('direction:', direction.toUpperCase());
-
-	if (direction == 'up') {
-		handleRequest(UP);
-		// console.log('Joystick moved:', event.direction);
-	} else if (direction == 'down') {
-		handleRequest(DOWN);
-		// console.log('Joystick moved:', event.direction);
-	} else if (direction == 'right') {
-		handleRequest(RIGHT);
-		// console.log('Joystick moved:', event.direction);
-	} else if (direction == 'left') {
-		handleRequest(LEFT);
-		// console.log('Joystick moved:', event.direction);
-	} else if (direction == 'upright') {
-		handleRequest(UPRIGHT);
-		// console.log('Joystick moved:', event.direction);
-	} else if (direction == 'downleft') {
-		handleRequest(DOWNLEFT);
-		// console.log('Joystick moved:', event.direction);
-	} else if (direction == 'upleft') {
-		handleRequest(UPLEFT);
-		// console.log('Joystick moved:', event.direction);
-	} else if (direction == 'downright') {
-		handleRequest(DOWNRIGHT);
-		// console.log('Joystick moved:', event.direction);
+	switch (direction) {
+		case 'up':
+			handleRequest(UP);
+			break;
+		case 'down':
+			handleRequest(DOWN);
+			break;
+		case 'right':
+			handleRequest(RIGHT);
+			break;
+		case 'left':
+			handleRequest(LEFT);
+			break;
+		case 'upright':
+			handleRequest(UPRIGHT);
+			break;
+		case 'downleft':
+			handleRequest(DOWNLEFT);
+			break;
+		case 'upleft':
+			handleRequest(UPLEFT);
+			break;
+		case 'downright':
+			handleRequest(DOWNRIGHT);
+			break;
+		default:
+			clearIntervals(); // If direction is not recognized, stop all requests
+			break;
 	}
 };
 
 // these handleStop and handleStart functions are not used in the current implementation
 export const handleStop = (event) => {
 	console.log('Joystick stopped:', event);
+	clearIntervals(); // Clear intervals to stop sending requests
 };
 
 export const handleStart = (event) => {
