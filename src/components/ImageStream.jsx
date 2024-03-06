@@ -4,7 +4,7 @@ import CameraImage from './CameraImage';
 
 const ImageStream = ({ trackStatus, handleTrackStatus }) => {
 	return (
-		<div className='w-full h-full overflow-hidden flex justify-center items-center'>
+		<div className='w-full h-full  flex justify-center items-center '>
 			{/* <img
 				className='w-full h-full object-cover'
 				src='/assets/robot-dog-vision.png'
@@ -16,7 +16,9 @@ const ImageStream = ({ trackStatus, handleTrackStatus }) => {
 						videoUrl='https://www.youtube.com/watch?v=KyXvr5SV2zw'
 						handleVideoProgress={handleVideoProgress}
 					/> */}
-					<CameraImage />
+					<div className='backdrop-blur-sm bg-gray-200 w-full h-full flex justify-center items-center'>
+						<CameraImage />
+					</div>
 					<div className='flex gap-2 items-center'>
 						<Button
 							variant='contained'
