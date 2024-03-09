@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import ImageStream from './ImageStream';
-import Map from './Map';
+// import Map from './Map';
 import ControllerSection from './ControllerSection';
 import TrackablesList from './TrackablesList';
 import PropTypes from 'prop-types';
-import GamepadController from './GamepadController';
+// import GamepadController from './GamepadController';
 import theme from '../Theme';
 import { ThemeProvider } from '@mui/material/styles';
 
@@ -48,11 +48,11 @@ const Layout = ({ connectionStatus }) => {
 						videoProgress={videoProgress}
 						trackStatus={trackStatus}
 					/>
-					<Map />
+					{/* <Map />
 					<GamepadController
 						controller={1}
 						style={{ position: 'fixed', bottom: 100, right: 100 }}
-					/>
+					/> */}
 				</div>
 			</div>
 		</ThemeProvider>

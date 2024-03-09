@@ -5,6 +5,7 @@ import InfoSection from './InfoSection';
 import { Joystick } from 'react-joystick-component';
 import { handleStart, handleMove, handleStop } from './Joystick';
 import Button from '@mui/material/Button';
+import useSocket from '../hooks/useSocket';
 
 const UP = 'i';
 const LEFT = 'j';
@@ -17,6 +18,7 @@ const DOWNRIGHT = '.';
 
 const backendIP = import.meta.env.VITE_BACKEND_IP;
 const backendPort = import.meta.env.VITE_BACKEND_PORT;
+const socketUrl = `http://${backendIP}:${backendPort}/`;
 
 const ControllerSection = ({
 	trackable,
@@ -39,14 +41,20 @@ const ControllerSection = ({
 	const [inputMethod, setInputMethod] = useState('keyboard'); // Default to keyboard
 	const keyIntervals = useRef({});
 
+	const { socket, isConnected } = useSocket(socketUrl); // Custom hook to manage socket connection
+
 	const sendRequest = async (key) => {
-		await fetch(`http://${backendIP}:${backendPort}/command`, {
-			method: 'POST',
-			body: JSON.stringify({ key: key }),
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		});
+		// await fetch(`http://${backendIP}:${backendPort}/command`, {
+		// 	method: 'POST',
+		// 	body: JSON.stringify({ key: key }),
+		// 	headers: {
+		// 		'Content-Type': 'application/json',
+		// 	},
+		// });
+
+		if (!isConnected) return;
+
+		socket.emit('command', { key });
 	};
 
 	const handleRequest = async (key) => {
@@ -177,7 +185,7 @@ const ControllerSection = ({
 
 	return (
 		<>
-			<div className='flex gap-2'>
+			<div className='flex gap-2 mb-2'>
 				<div className=' bg-gray-100 flex items-center p-2 rounded-lg w-fit'>
 					Speed:
 				</div>
@@ -188,7 +196,7 @@ const ControllerSection = ({
 					Currently Tracking:
 				</div>
 			</div>
-			<div className='w-full h-2/5  flex justify-between'>
+			<div className='w-full h-1/5  flex justify-between'>
 				<InfoSection
 					trackable={trackable}
 					trackStatus={trackStatus}

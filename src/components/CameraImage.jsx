@@ -1,7 +1,9 @@
 import { useEffect, useState, useRef } from 'react';
+import useSocket from '../hooks/useSocket';
 
 const backendIP = import.meta.env.VITE_BACKEND_IP;
 const backendPort = import.meta.env.VITE_BACKEND_PORT;
+const socketUrl = `http://${backendIP}:${backendPort}/`;
 
 const CameraImage = () => {
 	const [hoveredRectIndex, setHoveredRectIndex] = useState(null); // New state to track hovered rectangle
@@ -10,51 +12,50 @@ const CameraImage = () => {
 		imageUrl: null,
 		rectangles: [
 			{
-				id: null,
+				id: 1,
 				x2: 200,
 				x1: 100,
 				y2: 200,
 				y1: 100,
 			},
+			{
+				id: 2,
+				x2: 400,
+				x1: 300,
+				y2: 300,
+				y1: 200,
+			},
 		],
+		image_size: [640, 480], // width, height
 	});
-
 	const canvasRef = useRef(null);
+	const { socket, isConnected } = useSocket(socketUrl); // Custom hook to manage socket connection
 
 	useEffect(() => {
-		const sendRequest = async () => {
-			try {
-				const response = await fetch(
-					`http://${backendIP}:${backendPort}/stream`
-				);
-				const data = await response.json();
-				const image_size = data.image_size;
-				const coordinates = data.coordinates;
-				console.log(image_size, coordinates);
-
-				// Assuming data.image is a base64 encoded string
-				const base64Response = data.image.split(';base64,').pop(); // Extract base64 data
-				const blob = await fetch(
-					`data:image/jpeg;base64,${base64Response}`
-				).then((res) => res.blob()); // Convert base64 string to blob
-				const url = URL.createObjectURL(blob); // Create a URL for the blob
-				setStreamData(() => ({
-					rectangles: Object.keys(coordinates).map((id) => ({
-						id: id,
-						x1: coordinates[id][0],
-						y1: coordinates[id][1],
-						x2: coordinates[id][2],
-						y2: coordinates[id][3],
-					})),
-					imageUrl: url,
-				}));
-			} catch (error) {
-				console.error('Failed to fetch the image stream', error);
-			}
+		if (!isConnected) return;
+		socket.emit('request_stream');
+		const handleImageStream = (data) => {
+			setStreamData({
+				rectangles: Object.keys(data.coordinates).map((id) => ({
+					id,
+					x1: data.coordinates[id][0],
+					y1: data.coordinates[id][1],
+					x2: data.coordinates[id][2],
+					y2: data.coordinates[id][3],
+				})),
+				imageUrl: `data:image/jpeg;base64,${data.image
+					.split(';base64,')
+					.pop()}`,
+				image_size: data.image_size,
+			});
 		};
 
-		sendRequest();
-	}, [streamData]);
+		socket.on('image_stream', handleImageStream);
+
+		return () => {
+			socket.off('image_stream', handleImageStream);
+		};
+	}, [socket, isConnected, streamData]);
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
@@ -62,17 +63,19 @@ const CameraImage = () => {
 
 		context.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
 
-		streamData.rectangles.forEach((rect, index) => {
+		streamData.rectangles.forEach((rect) => {
 			context.beginPath();
 			const width = rect.x2 - rect.x1;
 			const height = rect.y2 - rect.y1;
 			context.rect(rect.x1, rect.y1, width, height);
+
 			context.fillStyle =
 				rect.id === selectedId
 					? 'rgba(100, 100, 100, 0.5)'
 					: 'transparent';
 			context.fill();
-			context.strokeStyle = index === hoveredRectIndex ? 'yellow' : 'red'; // Highlight on hover
+			context.strokeStyle =
+				rect.id === hoveredRectIndex ? 'yellow' : 'red'; // Highlight on hover
 			context.stroke();
 		});
 	}, [streamData, hoveredRectIndex, selectedId]); // Redraw when streamData changes
@@ -89,58 +92,52 @@ const CameraImage = () => {
 			const rect = canvas.getBoundingClientRect();
 			const x = event.clientX - rect.left;
 			const y = event.clientY - rect.top;
-			const hoveredIndex = streamData.rectangles.findIndex((rect) =>
+			const hoveredRect = streamData.rectangles.find((rect) =>
 				isPointInRect(x, y, rect)
 			);
-
-			setHoveredRectIndex(hoveredIndex >= 0 ? hoveredIndex : null);
+			// Set hoveredRectIndex to the id of the hoveredRect, or null if no rect is hovered
+			setHoveredRectIndex(hoveredRect ? hoveredRect.id : null);
 		};
 
 		const handleClick = (event) => {
+			// compare with previous selected rectangle, deselect if same
 			setSelectedId(() => {
 				const rect = canvas.getBoundingClientRect();
 				const x = event.clientX - rect.left;
 				const y = event.clientY - rect.top;
-				const clickedIndex = streamData.rectangles.findIndex((rect) =>
+
+				const clickedRect = streamData.rectangles.find((rect) =>
 					isPointInRect(x, y, rect)
 				);
-
+				if (clickedRect?.id === selectedId) {
+					return null;
+				}
 				// if selected then deselect, otherwise select
-				return clickedIndex >= 0
-					? streamData.rectangles[clickedIndex].id
-					: null;
+				return clickedRect ? clickedRect.id : null;
 			});
 		};
 
 		canvas.addEventListener('mousemove', handleMouseMove);
 		canvas.addEventListener('click', handleClick);
-
 		return () => {
 			canvas.removeEventListener('mousemove', handleMouseMove);
 			canvas.removeEventListener('click', handleClick);
 		};
-	}, [streamData]);
+	}, [streamData, selectedId]);
 
 	return (
 		<div className='relative'>
 			<canvas
 				className='absolute top-0 left-0'
-				width='640'
-				height='480'
+				width={streamData.image_size[0] || '640'}
+				height={streamData.image_size[1] || '480'}
 				ref={canvasRef}
 			></canvas>
-			{streamData.imageUrl ? (
-				<img
-					src={streamData.imageUrl}
-					alt='Live Stream'
-					className='max-h-[480px] max-w-[640px] min-h-[480px] min-w-[640px] h-[480px] w-[640px] '
-				/>
-			) : (
-				<img
-					src={'/assets/test.png'}
-					className='max-h-[480px] max-w-[640px] min-h-[480px] min-w-[640px] h-[480px] w-[640px] '
-				/>
-			)}
+			<img
+				src={streamData.imageUrl || '/assets/test.png'}
+				alt='Live Stream'
+				className={`max-h-[${streamData.image_size[1]}] max-w-[${streamData.image_size[0]}] min-h-[${streamData.image_size[1]}] min-w-[${streamData.image_size[0]}] h-[${streamData.image_size[1]}] w-[${streamData.image_size[0]}]`}
+			/>
 		</div>
 	);
 };
