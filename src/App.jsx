@@ -5,36 +5,30 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
+import useSocket from './hooks/useSocket';
 
 const backendIP = import.meta.env.VITE_BACKEND_IP;
 const backendPort = import.meta.env.VITE_BACKEND_PORT;
+const socketUrl = `http://${backendIP}:${backendPort}/`;
 
 function App() {
 	const [connectionStatus, setConnectionStatus] = useState('connecting'); // connected, connecting, failed
 	const [modalStatus, setModalStatus] = useState(true);
+	const { isConnected } = useSocket(socketUrl);
 	useEffect(() => {
-		const handleConnection = async () => {
-			try {
-				const resp = await fetch(
-					`http://${backendIP}:${backendPort}/`,
-					{
-						method: 'GET',
-					}
-				);
-				if (resp.status === 200) {
-					setConnectionStatus('connected');
-					setModalStatus(false);
-				} else {
-					setConnectionStatus('failed');
-					setModalStatus(true);
-				}
-			} catch (error) {
+		if (isConnected) {
+			setConnectionStatus('connected');
+			setModalStatus(false);
+		}
+		// timeout after 5 seconds
+		const timeout = setTimeout(() => {
+			if (connectionStatus === 'connecting') {
 				setConnectionStatus('failed');
 				setModalStatus(true);
 			}
-		};
-		handleConnection();
-	}, []);
+		}, 5000);
+		return () => clearTimeout(timeout);
+	}, [isConnected, connectionStatus]);
 	return (
 		<div className='h-screen w-screen p-4 flex justify-center'>
 			{connectionStatus === 'connecting' ? (
