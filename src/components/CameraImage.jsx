@@ -4,7 +4,6 @@ import useSocket from '../hooks/useSocket';
 const socketUrl = import.meta.env.VITE_SOCKET_URL;
 
 const CameraImage = () => {
-	const [stack, setStack] = useState([]);
 	const [hoveredRectIndex, setHoveredRectIndex] = useState(null); // New state to track hovered rectangle
 	const [selectedId, setSelectedId] = useState(null);
 	const [streamData, setStreamData] = useState({
@@ -35,11 +34,19 @@ const CameraImage = () => {
 		socket.emit('request_stream');
 
 		const handleImageStream = (data) => {
-			setStack((prevStack) => {
-				if (prevStack.length > 10) {
-					prevStack.shift();
-				}
-				return [...prevStack, data];
+			setStreamData({
+				rectangles: Object.keys(data.coordinates).map((id) => ({
+					id,
+					x1: data.coordinates[id][0],
+					y1: data.coordinates[id][1],
+					x2: data.coordinates[id][2],
+					y2: data.coordinates[id][3],
+				})),
+
+				imageUrl: `data:image/jpeg;base64,${data.image
+					.split(';base64,')
+					.pop()}`,
+				image_size: data.image_size,
 			});
 		};
 
@@ -49,25 +56,7 @@ const CameraImage = () => {
 			socket.off('image_stream', handleImageStream);
 		};
 	}, [socket, isConnected, streamData]);
-	useEffect(() => {
-		if (stack.length === 0) return;
-		console.log(stack);
-		const data = stack.pop();
-		setStreamData({
-			rectangles: Object.keys(data.coordinates).map((id) => ({
-				id,
-				x1: data.coordinates[id][0],
-				y1: data.coordinates[id][1],
-				x2: data.coordinates[id][2],
-				y2: data.coordinates[id][3],
-			})),
 
-			imageUrl: `data:image/jpeg;base64,${data.image
-				.split(';base64,')
-				.pop()}`,
-			image_size: data.image_size,
-		});
-	}, [stack]);
 	useEffect(() => {
 		const canvas = canvasRef.current;
 		const context = canvas.getContext('2d');
