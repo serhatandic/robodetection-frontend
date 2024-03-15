@@ -1,9 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import useSocket from '../hooks/useSocket';
 
-const backendIP = import.meta.env.VITE_BACKEND_IP;
-const backendPort = import.meta.env.VITE_BACKEND_PORT;
-const socketUrl = `http://${backendIP}:${backendPort}/`;
+const socketUrl = import.meta.env.VITE_SOCKET_URL;
 
 const CameraImage = () => {
 	const [hoveredRectIndex, setHoveredRectIndex] = useState(null); // New state to track hovered rectangle

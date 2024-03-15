@@ -7,9 +7,7 @@ import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import useSocket from './hooks/useSocket';
 
-const backendIP = import.meta.env.VITE_BACKEND_IP;
-const backendPort = import.meta.env.VITE_BACKEND_PORT;
-const socketUrl = `http://${backendIP}:${backendPort}/`;
+const socketUrl = import.meta.env.VITE_SOCKET_URL;
 
 function App() {
 	const [connectionStatus, setConnectionStatus] = useState('connecting'); // connected, connecting, failed

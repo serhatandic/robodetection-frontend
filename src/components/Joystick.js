@@ -9,13 +9,12 @@ const UPLEFT = 'u';
 const DOWNLEFT = 'm';
 const DOWNRIGHT = '.';
 
-const backendIP = import.meta.env.VITE_BACKEND_IP;
-const backendPort = import.meta.env.VITE_BACKEND_PORT;
+const socketUrl = import.meta.env.VITE_SOCKET_URL;
 
 const intervals = {}; // Object to store intervals for each direction
 
 const sendRequest = async (key) => {
-	await fetch(`http://${backendIP}:${backendPort}/command`, {
+	await fetch(`${socketUrl}command`, {
 		method: 'POST',
 		body: JSON.stringify({ key: key }),
 		headers: {

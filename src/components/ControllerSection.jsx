@@ -16,9 +16,7 @@ const UPLEFT = 'u';
 const DOWNLEFT = 'm';
 const DOWNRIGHT = '.';
 
-const backendIP = import.meta.env.VITE_BACKEND_IP;
-const backendPort = import.meta.env.VITE_BACKEND_PORT;
-const socketUrl = `http://${backendIP}:${backendPort}/`;
+const socketUrl = import.meta.env.VITE_SOCKET_URL;
 
 const ControllerSection = ({
 	trackable,
