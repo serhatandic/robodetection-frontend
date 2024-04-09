@@ -48,6 +48,13 @@ const CameraImage = () => {
 					.pop()}`,
 				image_size: data.image_size,
 			});
+
+			const boundingRect = data.coordinates[selectedId];
+			const centerOfTheImage = data.image_size.map((size) => size / 2);
+			socket.emit('follow', {
+				bounding_box: boundingRect ?? [],
+				center: centerOfTheImage,
+			});
 		};
 
 		socket.on('image_stream', handleImageStream);
@@ -55,7 +62,7 @@ const CameraImage = () => {
 		return () => {
 			socket.off('image_stream', handleImageStream);
 		};
-	}, [socket, isConnected, streamData]);
+	}, [socket, isConnected, streamData, selectedId]);
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
