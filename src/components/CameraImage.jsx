@@ -54,6 +54,7 @@ const CameraImage = () => {
 			socket.emit('follow', {
 				bounding_box: boundingRect ?? [],
 				center: centerOfTheImage,
+				isReleased: selectedId === null,
 			});
 		};
 
