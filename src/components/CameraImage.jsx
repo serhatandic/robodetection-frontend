@@ -4,6 +4,9 @@ import useSocket from '../hooks/useSocket';
 const socketUrl = import.meta.env.VITE_SOCKET_URL;
 
 const CameraImage = () => {
+	const [fps, setFps] = useState(0);
+	const [ping, setPing] = useState(0);
+	const [health, setHealth] = useState(''); // green, yellow, red
 	const [hoveredRectIndex, setHoveredRectIndex] = useState(null); // New state to track hovered rectangle
 	const [selectedId, setSelectedId] = useState(null);
 	const [streamData, setStreamData] = useState({
@@ -28,12 +31,29 @@ const CameraImage = () => {
 	});
 	const canvasRef = useRef(null);
 	const { socket, isConnected } = useSocket(socketUrl); // Custom hook to manage socket connection
+	const lastFrameTime = useRef(Date.now());
 
 	useEffect(() => {
 		if (!isConnected) return;
 		socket.emit('request_stream');
 
 		const handleImageStream = (data) => {
+			const now = Date.now();
+			const deltaTime = now - lastFrameTime.current;
+			if (deltaTime < 80) {
+				setHealth('green');
+			} else if (deltaTime < 150) {
+				setHealth('yellow');
+			} else {
+				setHealth('red');
+			}
+			setPing(deltaTime);
+			// avoid division by zero with 1 microsecond
+			const timeEpsilon = 0.000001;
+			const fps = 1000 / (deltaTime + timeEpsilon); // Milliseconds to seconds conversion for FPS
+			setFps(Math.round(fps)); // Update FPS state rounded to nearest whole number
+			lastFrameTime.current = now; // Update the last frame time
+
 			setStreamData({
 				rectangles: Object.keys(data.coordinates).map((id) => ({
 					id,
@@ -135,6 +155,20 @@ const CameraImage = () => {
 
 	return (
 		<div className='relative'>
+			<div className='absolute top-0 left-0 bg-black bg-opacity-50 text-white p-2'>
+				<p>FPS: {fps}</p>
+				<div className='flex flex-row gap-2 items-center'>
+					<p>Ping: {ping}ms</p>
+					<div
+						style={{
+							width: '20px',
+							height: '20px',
+							borderRadius: '50%',
+							backgroundColor: health,
+						}}
+					></div>
+				</div>
+			</div>
 			<canvas
 				className='absolute top-0 left-0'
 				width={streamData.image_size[0] || '640'}
