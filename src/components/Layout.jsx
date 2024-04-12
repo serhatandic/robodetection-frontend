@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 // import GamepadController from './GamepadController';
 import theme from '../Theme';
 import { ThemeProvider } from '@mui/material/styles';
-
+import Map from './Map';
 const Layout = ({ connectionStatus }) => {
 	const [trackable, setTrackable] = useState(null);
 	const [trackStatus, setTrackStatus] = useState(false);
@@ -42,14 +42,14 @@ const Layout = ({ connectionStatus }) => {
 						trackStatus={trackStatus}
 					/>
 				</div>
-				<div className='w-full h-full flex flex-col p-1 '>
+				<div className='w-full h-full flex flex-col p-1 gap-2'>
 					<TrackablesList
 						handleTrackableChange={handleTrackableChange}
 						videoProgress={videoProgress}
 						trackStatus={trackStatus}
 					/>
-					{/* <Map />
-					<GamepadController
+					<Map />
+					{/* <GamepadController
 						controller={1}
 						style={{ position: 'fixed', bottom: 100, right: 100 }}
 					/> */}

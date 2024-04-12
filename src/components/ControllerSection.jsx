@@ -42,14 +42,6 @@ const ControllerSection = ({
 	const { socket, isConnected } = useSocket(socketUrl); // Custom hook to manage socket connection
 
 	const sendRequest = async (key) => {
-		// await fetch(`http://${backendIP}:${backendPort}/command`, {
-		// 	method: 'POST',
-		// 	body: JSON.stringify({ key: key }),
-		// 	headers: {
-		// 		'Content-Type': 'application/json',
-		// 	},
-		// });
-
 		if (!isConnected) return;
 
 		socket.emit('command', { key });
@@ -183,7 +175,7 @@ const ControllerSection = ({
 
 	return (
 		<>
-			<div className='flex gap-2 mb-2'>
+			{/* <div className='flex gap-2 mb-2'>
 				<div className=' bg-gray-100 flex items-center p-2 rounded-lg w-fit'>
 					Speed:
 				</div>
@@ -193,8 +185,8 @@ const ControllerSection = ({
 				<div className=' bg-gray-100 flex items-center p-2 rounded-lg w-fit'>
 					Currently Tracking:
 				</div>
-			</div>
-			<div className='w-full h-1/5  flex justify-between'>
+			</div> */}
+			<div className='w-full flex justify-between'>
 				<InfoSection
 					trackable={trackable}
 					trackStatus={trackStatus}

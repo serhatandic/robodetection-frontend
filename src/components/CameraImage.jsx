@@ -2,6 +2,8 @@ import { useEffect, useState, useRef } from 'react';
 import useSocket from '../hooks/useSocket';
 
 const socketUrl = import.meta.env.VITE_SOCKET_URL;
+const fpsRecords = [];
+const pingRecords = [];
 
 const CameraImage = () => {
 	const [fps, setFps] = useState(0);
@@ -47,12 +49,25 @@ const CameraImage = () => {
 			} else {
 				setHealth('red');
 			}
-			setPing(deltaTime);
+			pingRecords.push(deltaTime);
+
 			// avoid division by zero with 1 microsecond
 			const timeEpsilon = 0.000001;
 			const fps = 1000 / (deltaTime + timeEpsilon); // Milliseconds to seconds conversion for FPS
-			setFps(Math.round(fps)); // Update FPS state rounded to nearest whole number
+			fpsRecords.push(Math.round(fps)); // Update FPS state rounded to nearest whole number
 			lastFrameTime.current = now; // Update the last frame time
+
+			if (fpsRecords.length > 3) {
+				const sum = fpsRecords.reduce((a, b) => a + b, 0);
+				setFps(Math.round(sum / fpsRecords.length));
+				fpsRecords.shift();
+			}
+
+			if (pingRecords.length > 3) {
+				const sum = pingRecords.reduce((a, b) => a + b, 0);
+				setPing(Math.round(sum / pingRecords.length));
+				pingRecords.shift();
+			}
 
 			setStreamData({
 				rectangles: Object.keys(data.coordinates).map((id) => ({
@@ -155,20 +170,22 @@ const CameraImage = () => {
 
 	return (
 		<div className='relative'>
-			<div className='absolute top-0 left-0 bg-black bg-opacity-50 text-white p-2'>
-				<p>FPS: {fps}</p>
-				<div className='flex flex-row gap-2 items-center'>
-					<p>Ping: {ping}ms</p>
-					<div
-						style={{
-							width: '20px',
-							height: '20px',
-							borderRadius: '50%',
-							backgroundColor: health,
-						}}
-					></div>
+			{fps && ping ? (
+				<div className='absolute top-0 left-0 bg-black bg-opacity-50 text-white p-2'>
+					<p>FPS: {fps}</p>
+					<div className='flex flex-row gap-2 items-center'>
+						<p>Ping: {ping}ms</p>
+						<div
+							style={{
+								width: '20px',
+								height: '20px',
+								borderRadius: '50%',
+								backgroundColor: health,
+							}}
+						></div>
+					</div>
 				</div>
-			</div>
+			) : null}
 			<canvas
 				className='absolute top-0 left-0'
 				width={streamData.image_size[0] || '640'}
