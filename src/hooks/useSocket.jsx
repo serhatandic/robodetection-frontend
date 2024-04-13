@@ -14,7 +14,6 @@ const useSocket = (url) => {
 		socket.on('connect', () => {
 			console.log('Socket connected');
 			setIsConnected(true);
-			socket.emit('request_stream');
 		});
 
 		socket.on('disconnect', () => {

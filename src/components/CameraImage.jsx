@@ -4,7 +4,6 @@ import useSocket from '../hooks/useSocket';
 const socketUrl = import.meta.env.VITE_SOCKET_URL;
 const fpsRecords = [];
 const pingRecords = [];
-//const batchSize = 30;
 
 const CameraImage = () => {
 	const [fps, setFps] = useState(0);
@@ -40,8 +39,6 @@ const CameraImage = () => {
 		if (!isConnected) return;
 
 		const handleImageStream = (data) => {
-			socket.emit('request_stream');
-
 			const now = Date.now();
 			const deltaTime = now - lastFrameTime.current;
 			if (deltaTime < 80) {
@@ -80,10 +77,6 @@ const CameraImage = () => {
 				pingRecords.shift();
 			}
 
-			const arrayBuffer = new Uint8Array(data.image);
-			const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
-			const imageUrl = URL.createObjectURL(blob);
-
 			setStreamData({
 				rectangles: Object.keys(data.coordinates).map((id) => ({
 					id,
@@ -93,7 +86,9 @@ const CameraImage = () => {
 					y2: data.coordinates[id][3],
 				})),
 
-				imageUrl: imageUrl,
+				imageUrl: `data:image/jpeg;base64,${data.image
+					.split(';base64,')
+					.pop()}`,
 				image_size: data.image_size,
 			});
 
@@ -111,7 +106,7 @@ const CameraImage = () => {
 		return () => {
 			socket.off('image_stream', handleImageStream);
 		};
-	}, [socket, isConnected, streamData, selectedId]);
+	}, [socket, isConnected, selectedId]);
 
 	useEffect(() => {
 		const canvas = canvasRef.current;

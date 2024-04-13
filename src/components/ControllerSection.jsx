@@ -154,6 +154,7 @@ const ControllerSection = ({
 			// handlekeydown will be removed from the event listener
 			window.removeEventListener('keydown', handleKeyDown);
 			window.removeEventListener('keyup', handleKeyUp);
+			// eslint-disable-next-line react-hooks/exhaustive-deps
 			Object.values(keyIntervals.current).forEach(clearInterval);
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
