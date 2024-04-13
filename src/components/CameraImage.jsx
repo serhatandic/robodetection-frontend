@@ -4,6 +4,7 @@ import useSocket from '../hooks/useSocket';
 const socketUrl = import.meta.env.VITE_SOCKET_URL;
 const fpsRecords = [];
 const pingRecords = [];
+//const batchSize = 30;
 
 const CameraImage = () => {
 	const [fps, setFps] = useState(0);
@@ -37,9 +38,10 @@ const CameraImage = () => {
 
 	useEffect(() => {
 		if (!isConnected) return;
-		socket.emit('request_stream');
 
 		const handleImageStream = (data) => {
+			socket.emit('request_stream');
+
 			const now = Date.now();
 			const deltaTime = now - lastFrameTime.current;
 			if (deltaTime < 80) {
@@ -57,6 +59,15 @@ const CameraImage = () => {
 			fpsRecords.push(Math.round(fps)); // Update FPS state rounded to nearest whole number
 			lastFrameTime.current = now; // Update the last frame time
 
+			// make sure not to include outliers
+			if (fps > fpsRecords[fpsRecords.length - 1] * 3) {
+				return;
+			}
+
+			if (deltaTime > pingRecords[pingRecords.length - 1] * 3) {
+				return;
+			}
+
 			if (fpsRecords.length > 3) {
 				const sum = fpsRecords.reduce((a, b) => a + b, 0);
 				setFps(Math.round(sum / fpsRecords.length));
@@ -69,6 +80,10 @@ const CameraImage = () => {
 				pingRecords.shift();
 			}
 
+			const arrayBuffer = new Uint8Array(data.image);
+			const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
+			const imageUrl = URL.createObjectURL(blob);
+
 			setStreamData({
 				rectangles: Object.keys(data.coordinates).map((id) => ({
 					id,
@@ -78,9 +93,7 @@ const CameraImage = () => {
 					y2: data.coordinates[id][3],
 				})),
 
-				imageUrl: `data:image/jpeg;base64,${data.image
-					.split(';base64,')
-					.pop()}`,
+				imageUrl: imageUrl,
 				image_size: data.image_size,
 			});
 
