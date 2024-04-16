@@ -186,7 +186,7 @@ const ControllerSection = ({
 					Currently Tracking:
 				</div>
 			</div> */}
-			<div className='w-full h-full flex justify-between'>
+			<div className='w-full h-full max-h-[50%] flex justify-between'>
 				<InfoSection
 					trackable={trackable}
 					trackStatus={trackStatus}

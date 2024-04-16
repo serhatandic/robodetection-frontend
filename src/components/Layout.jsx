@@ -29,7 +29,7 @@ const Layout = ({ connectionStatus }) => {
 	return (
 		<ThemeProvider theme={theme}>
 			<div className=' h-full w-full flex flex-col md:flex-row'>
-				<div className='w-full h-full flex flex-col p-1 gap-2'>
+				<div className='w-full h-full flex flex-col p-1 gap-2 justify-between'>
 					<ImageStream
 						handleVideoProgress={handleVideoProgress}
 						handleTrackStatus={handleTrackStatus}
