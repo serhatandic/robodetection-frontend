@@ -1,11 +1,13 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState, useRef } from 'react';
 import useSocket from '../hooks/useSocket';
 
 const socketUrl = import.meta.env.VITE_SOCKET_URL;
 const fpsRecords = [];
 const pingRecords = [];
+let frameCounter = 0;
 
-const CameraImage = () => {
+const CameraImage = ({ imageQuality }) => {
 	const [fps, setFps] = useState(0);
 	const [ping, setPing] = useState(0);
 	const [health, setHealth] = useState(''); // green, yellow, red
@@ -34,11 +36,12 @@ const CameraImage = () => {
 	const canvasRef = useRef(null);
 	const { socket, isConnected } = useSocket(socketUrl); // Custom hook to manage socket connection
 	const lastFrameTime = useRef(Date.now());
-
+	const lastFPSUpdateTime = useRef(Date.now());
 	useEffect(() => {
 		if (!isConnected) return;
 
 		const handleImageStream = (data) => {
+			frameCounter++;
 			const now = Date.now();
 			const deltaTime = now - lastFrameTime.current;
 			if (deltaTime < 80) {
@@ -55,20 +58,15 @@ const CameraImage = () => {
 			const fps = 1000 / (deltaTime + timeEpsilon); // Milliseconds to seconds conversion for FPS
 			fpsRecords.push(Math.round(fps)); // Update FPS state rounded to nearest whole number
 			lastFrameTime.current = now; // Update the last frame time
-
-			// make sure not to include outliers
-			if (fps > fpsRecords[fpsRecords.length - 1] * 3) {
-				return;
+			// instead of above approach to calculate fps, we can also use the following approach. calculate how many frames were rendered in the last second
+			if (now - lastFPSUpdateTime.current > 1000) {
+				setFps(frameCounter);
+				frameCounter = 0;
+				lastFPSUpdateTime.current = now;
 			}
 
 			if (deltaTime > pingRecords[pingRecords.length - 1] * 3) {
 				return;
-			}
-
-			if (fpsRecords.length > 3) {
-				const sum = fpsRecords.reduce((a, b) => a + b, 0);
-				setFps(Math.round(sum / fpsRecords.length));
-				fpsRecords.shift();
 			}
 
 			if (pingRecords.length > 3) {
@@ -175,6 +173,11 @@ const CameraImage = () => {
 			canvas.removeEventListener('click', handleClick);
 		};
 	}, [streamData, selectedId]);
+
+	useEffect(() => {
+		if (!isConnected) return;
+		socket.emit('set_image_quality', imageQuality);
+	}, [imageQuality, socket, isConnected]);
 
 	return (
 		<div className='relative'>

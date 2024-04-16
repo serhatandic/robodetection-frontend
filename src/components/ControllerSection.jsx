@@ -2,10 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import KeyboardController from './KeyboardController';
 import InfoSection from './InfoSection';
-import { Joystick } from 'react-joystick-component';
-import { handleStart, handleMove, handleStop } from './Joystick';
 import Button from '@mui/material/Button';
 import useSocket from '../hooks/useSocket';
+import JoystickWrapper from './JoystickWrapper';
 
 const UP = 'i';
 const LEFT = 'j';
@@ -187,7 +186,7 @@ const ControllerSection = ({
 					Currently Tracking:
 				</div>
 			</div> */}
-			<div className='w-full flex justify-between'>
+			<div className='w-full h-full flex justify-between'>
 				<InfoSection
 					trackable={trackable}
 					trackStatus={trackStatus}
@@ -217,15 +216,7 @@ const ControllerSection = ({
 					</div>
 				) : (
 					<div className='w-1/3 h-full flex flex-col justify-between items-center ml-2'>
-						<Joystick
-							size={150}
-							sticky={false}
-							baseColor='#87CEFA'
-							stickColor='#FF7F50'
-							start={handleStart}
-							move={handleMove}
-							stop={handleStop}
-						/>
+						<JoystickWrapper />
 						<Button
 							className='w-full'
 							variant='contained'
