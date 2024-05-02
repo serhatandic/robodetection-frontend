@@ -39,7 +39,7 @@ const ImageStream = ({
 									handleTrackStatus((prev) => !prev);
 								}}
 							>
-								Stop Tracking
+								Stop Stream
 							</Button>
 							<ImageQualitySelection
 								imageQuality={imageQuality}
@@ -60,7 +60,7 @@ const ImageStream = ({
 						handleTrackStatus((prev) => !prev);
 					}}
 				>
-					Start Tracking
+					Start Stream
 				</Button>
 			)}
 		</div>
