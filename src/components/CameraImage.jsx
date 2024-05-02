@@ -197,10 +197,7 @@ const CameraImage = ({
 
 	useEffect(() => {
 		if (!isConnected) return;
-		console.log(
-			'selectedIdFromTrackablesList',
-			selectedIdFromTrackablesList
-		);
+
 		setSelectedId(selectedIdFromTrackablesList);
 	}, [socket, isConnected, selectedIdFromTrackablesList]);
 	return (
