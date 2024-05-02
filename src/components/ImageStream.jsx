@@ -10,6 +10,7 @@ const ImageStream = ({
 	handleTrackStatus,
 	setTrackablesData,
 	selectedIdFromTrackablesList,
+	setCurrentlyTrackingId,
 }) => {
 	const [imageQuality, setImageQuality] = useState(40);
 
@@ -28,6 +29,7 @@ const ImageStream = ({
 							selectedIdFromTrackablesList={
 								selectedIdFromTrackablesList
 							}
+							setCurrentlyTrackingId={setCurrentlyTrackingId}
 						/>
 					</div>
 					<div className='flex gap-2 items-center w-[74%]'>

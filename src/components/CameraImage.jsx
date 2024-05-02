@@ -11,6 +11,7 @@ const CameraImage = ({
 	imageQuality,
 	setTrackablesData,
 	selectedIdFromTrackablesList,
+	setCurrentlyTrackingId,
 }) => {
 	const [fps, setFps] = useState(0);
 	const [ping, setPing] = useState(0);
@@ -199,6 +200,13 @@ const CameraImage = ({
 
 		setSelectedId(selectedIdFromTrackablesList);
 	}, [socket, isConnected, selectedIdFromTrackablesList]);
+
+	useEffect(() => {
+		if (!isConnected) return;
+
+		setCurrentlyTrackingId(selectedId);
+	}, [socket, isConnected, selectedId, setCurrentlyTrackingId]);
+	
 	return (
 		<div className='relative'>
 			{fps && ping ? (

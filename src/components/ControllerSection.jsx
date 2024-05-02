@@ -1,5 +1,5 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
 import KeyboardController from './KeyboardController';
 import InfoSection from './InfoSection';
 import Button from '@mui/material/Button';
@@ -22,6 +22,7 @@ const ControllerSection = ({
 	connectionStatus,
 	trackStatus,
 	handleTrackStatus,
+	currentlyTrackingId,
 }) => {
 	// create a ref (reference) for each button
 	// ref.current is the corresponding button
@@ -191,6 +192,7 @@ const ControllerSection = ({
 					trackable={trackable}
 					trackStatus={trackStatus}
 					handleTrackStatus={handleTrackStatus}
+					currentlyTrackingId={currentlyTrackingId}
 				/>
 				{inputMethod === 'keyboard' ? (
 					<div className='w-1/3 flex flex-col justify-between items-center ml-2'>
@@ -229,13 +231,6 @@ const ControllerSection = ({
 			</div>
 		</>
 	);
-};
-
-ControllerSection.propTypes = {
-	trackable: PropTypes.string,
-	connectionStatus: PropTypes.string,
-	trackStatus: PropTypes.bool,
-	handleTrackStatus: PropTypes.func,
 };
 
 export default ControllerSection;

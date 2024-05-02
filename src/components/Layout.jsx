@@ -13,6 +13,7 @@ const Layout = ({ connectionStatus }) => {
 	const [trackablesData, setTrackablesData] = useState([]);
 	const [selectedIdFromTrackablesList, setSelectedIdFromTrackablesList] =
 		useState(null);
+	const [currentlyTrackingId, setCurrentlyTrackingId] = useState(null);
 
 	const handleTrackStatus = (status) => {
 		setTrackStatus(status);
@@ -29,11 +30,13 @@ const Layout = ({ connectionStatus }) => {
 						selectedIdFromTrackablesList={
 							selectedIdFromTrackablesList
 						}
+						setCurrentlyTrackingId={setCurrentlyTrackingId}
 					/>
 					<ControllerSection
 						connectionStatus={connectionStatus}
 						handleTrackStatus={handleTrackStatus}
 						trackStatus={trackStatus}
+						currentlyTrackingId={currentlyTrackingId}
 					/>
 				</div>
 				<div className='w-full h-full flex flex-col p-1 gap-2'>
