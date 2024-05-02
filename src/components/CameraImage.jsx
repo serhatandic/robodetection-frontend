@@ -11,7 +11,6 @@ const CameraImage = ({
 	imageQuality,
 	setTrackablesData,
 	selectedIdFromTrackablesList,
-	setSelectedIdFromTrackablesList,
 }) => {
 	const [fps, setFps] = useState(0);
 	const [ping, setPing] = useState(0);
@@ -108,11 +107,11 @@ const CameraImage = ({
 
 			const boundingRect = data.coordinates[selectedId];
 			const centerOfTheImage = data.image_size.map((size) => size / 2);
-			// socket.emit('follow', {
-			// 	bounding_box: boundingRect ?? [],
-			// 	center: centerOfTheImage,
-			// 	isReleased: selectedId !== null ? false : true,
-			// });
+			socket.emit('follow', {
+				bounding_box: boundingRect ?? [],
+				center: centerOfTheImage,
+				isReleased: selectedId !== null ? false : true,
+			});
 		};
 
 		socket.on('image_stream', handleImageStream);
@@ -120,7 +119,7 @@ const CameraImage = ({
 		return () => {
 			socket.off('image_stream', handleImageStream);
 		};
-	}, [socket, isConnected, selectedId]);
+	}, [socket, isConnected, selectedId, setTrackablesData]);
 
 	useEffect(() => {
 		const canvas = canvasRef.current;

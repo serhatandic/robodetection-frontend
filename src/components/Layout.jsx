@@ -29,9 +29,6 @@ const Layout = ({ connectionStatus }) => {
 						selectedIdFromTrackablesList={
 							selectedIdFromTrackablesList
 						}
-						setSelectedIdFromTrackablesList={
-							setSelectedIdFromTrackablesList
-						}
 					/>
 					<ControllerSection
 						connectionStatus={connectionStatus}

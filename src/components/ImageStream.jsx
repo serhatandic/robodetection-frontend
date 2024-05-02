@@ -10,7 +10,6 @@ const ImageStream = ({
 	handleTrackStatus,
 	setTrackablesData,
 	selectedIdFromTrackablesList,
-	setSelectedIdFromTrackablesList,
 }) => {
 	const [imageQuality, setImageQuality] = useState(40);
 
@@ -28,9 +27,6 @@ const ImageStream = ({
 							setTrackablesData={setTrackablesData}
 							selectedIdFromTrackablesList={
 								selectedIdFromTrackablesList
-							}
-							setSelectedIdFromTrackablesList={
-								setSelectedIdFromTrackablesList
 							}
 						/>
 					</div>
