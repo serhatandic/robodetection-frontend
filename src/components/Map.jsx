@@ -8,9 +8,15 @@ const Map = () => {
 
 	useEffect(() => {
 		if (!isConnected) return;
+		// request the initial map
 		socket.emit('request_map');
+	}, [socket, isConnected]);
+
+	useEffect(() => {
+		if (!isConnected) return;
 
 		const handleMapStream = (data) => {
+			socket.emit('request_map');
 			setStreamData({
 				imageUrl: `data:image/jpeg;base64,${data.image
 					.split(';base64,')

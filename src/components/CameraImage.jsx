@@ -37,10 +37,17 @@ const CameraImage = ({ imageQuality }) => {
 	const { socket, isConnected } = useSocket(socketUrl); // Custom hook to manage socket connection
 	const lastFrameTime = useRef(Date.now());
 	const lastFPSUpdateTime = useRef(Date.now());
+
 	useEffect(() => {
 		if (!isConnected) return;
+		// request the initial stream
+		socket.emit('request_stream');
+	}, [socket, isConnected]);
 
+	useEffect(() => {
+		if (!isConnected) return;
 		const handleImageStream = (data) => {
+			socket.emit('request_stream');
 			frameCounter++;
 			const now = Date.now();
 			const deltaTime = now - lastFrameTime.current;
