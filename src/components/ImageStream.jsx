@@ -2,7 +2,7 @@
 import Button from '@mui/material/Button';
 import CameraImage from './CameraImage';
 import ImageQualitySelection from './ImageQualitySelection';
-
+import Box from '@mui/material/Box';
 import { useState } from 'react';
 
 const ImageStream = ({
@@ -30,20 +30,27 @@ const ImageStream = ({
 							}
 						/>
 					</div>
-					<div className='flex gap-2 items-center w-full'>
-						<Button
-							className='h-full'
-							variant='contained'
-							onClick={() => {
-								handleTrackStatus((prev) => !prev);
-							}}
-						>
-							Stop Tracking
-						</Button>
-						<ImageQualitySelection
-							imageQuality={imageQuality}
-							handleImageQualityChange={handleImageQualityChange}
-						/>
+					<div className='flex gap-2 items-center w-[74%]'>
+						<Box className='flex gap-2 items-center w-full h-full'>
+							<Button
+								className='h-full'
+								variant='contained'
+								onClick={() => {
+									handleTrackStatus((prev) => !prev);
+								}}
+							>
+								Stop Tracking
+							</Button>
+							<ImageQualitySelection
+								imageQuality={imageQuality}
+								handleImageQualityChange={
+									handleImageQualityChange
+								}
+							/>
+						</Box>
+						{/* <Button className='h-full' variant='contained'>
+							Cancel all goals
+						</Button> */}
 					</div>
 				</div>
 			) : (

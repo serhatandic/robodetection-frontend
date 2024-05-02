@@ -26,8 +26,11 @@ const InfoSection = () => {
 
 	const columns = [
 		// full width
-		{ field: 'activitylog', headerName: 'Activity Log', flex: 1 },
-		{ field: 'spacer', headerName: '', flex: 1, hide: true },
+		{
+			field: 'activitylog',
+			headerName: 'Activity Log',
+			flex: 1,
+		},
 		{
 			field: 'timestamp',
 			headerName: 'Timestamp',

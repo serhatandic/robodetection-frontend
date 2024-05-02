@@ -9,14 +9,9 @@ const Map = () => {
 	useEffect(() => {
 		if (!isConnected) return;
 		// request the initial map
-		socket.emit('request_map');
-	}, [socket, isConnected]);
-
-	useEffect(() => {
-		if (!isConnected) return;
 
 		const handleMapStream = (data) => {
-			socket.emit('request_map');
+			console.log('map requested');
 			setStreamData({
 				imageUrl: `data:image/jpeg;base64,${data.image
 					.split(';base64,')
@@ -24,11 +19,16 @@ const Map = () => {
 			});
 		};
 
+		const interval = setInterval(() => {
+			socket.emit('request_map');
+		}, 1000);
+
 		socket.on('map_stream', handleMapStream);
 		return () => {
 			socket.off('map_stream', handleMapStream);
+			clearInterval(interval);
 		};
-	}, [socket, isConnected, streamData]);
+	}, [socket, isConnected]);
 	return (
 		<div className='w-full h-full overflow-hidden'>
 			<img
