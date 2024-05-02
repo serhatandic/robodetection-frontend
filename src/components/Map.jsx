@@ -11,7 +11,6 @@ const Map = () => {
 		// request the initial map
 
 		const handleMapStream = (data) => {
-			console.log('map requested');
 			setStreamData({
 				imageUrl: `data:image/jpeg;base64,${data.image
 					.split(';base64,')

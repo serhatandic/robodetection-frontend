@@ -8,15 +8,16 @@ TimeAgo.addLocale(en);
 const timeAgo = new TimeAgo('en-US');
 
 const logs = {
-	0: 'Target Released',
-	1: 'Stopped following',
-	2: 'Half the way, calculating a new route',
-	3: "Couldn't calculate a new route, using the previous route",
-	4: 'Continue to follow',
-	5: 'Timeout, moving forward',
-	6: 'Target is too close, will not follow',
-	7: 'Starting to follow the target',
+	0: 'Target released from tracking',
+	1: 'Stopped tracking target',
+	2: 'Midway update: recalculating route',
+	3: 'Route recalculation failed; reverting to previous route',
+	4: 'Continuing to follow target',
+	5: 'Operation timed out; proceeding with current action',
+	6: 'Target proximity too close for tracking',
+	7: 'Initiating target tracking',
 };
+
 const socketUrl = import.meta.env.VITE_SOCKET_URL;
 
 const InfoSection = () => {
