@@ -9,21 +9,13 @@ import theme from '../Theme';
 import { ThemeProvider } from '@mui/material/styles';
 import Map from './Map';
 const Layout = ({ connectionStatus }) => {
-	const [trackable, setTrackable] = useState(null);
 	const [trackStatus, setTrackStatus] = useState(false);
-
-	const [videoProgress, setVideoProgress] = useState();
-	const handleVideoProgress = (progress) => {
-		setVideoProgress(progress);
-	};
+	const [trackablesData, setTrackablesData] = useState([]);
+	const [selectedIdFromTrackablesList, setSelectedIdFromTrackablesList] =
+		useState(null);
 
 	const handleTrackStatus = (status) => {
 		setTrackStatus(status);
-		setTrackable(null);
-	};
-
-	const handleTrackableChange = (trackable) => {
-		setTrackable(trackable);
 	};
 
 	return (
@@ -31,22 +23,32 @@ const Layout = ({ connectionStatus }) => {
 			<div className=' h-full w-full flex flex-col md:flex-row'>
 				<div className='w-full h-full flex flex-col p-1 gap-2 justify-between'>
 					<ImageStream
-						handleVideoProgress={handleVideoProgress}
 						handleTrackStatus={handleTrackStatus}
 						trackStatus={trackStatus}
+						setTrackablesData={setTrackablesData}
+						selectedIdFromTrackablesList={
+							selectedIdFromTrackablesList
+						}
+						setSelectedIdFromTrackablesList={
+							setSelectedIdFromTrackablesList
+						}
 					/>
 					<ControllerSection
 						connectionStatus={connectionStatus}
-						trackable={trackable}
 						handleTrackStatus={handleTrackStatus}
 						trackStatus={trackStatus}
 					/>
 				</div>
 				<div className='w-full h-full flex flex-col p-1 gap-2'>
 					<TrackablesList
-						handleTrackableChange={handleTrackableChange}
-						videoProgress={videoProgress}
 						trackStatus={trackStatus}
+						trackablesData={trackablesData}
+						selectedIdFromTrackablesList={
+							selectedIdFromTrackablesList
+						}
+						setSelectedIdFromTrackablesList={
+							setSelectedIdFromTrackablesList
+						}
 					/>
 					<Map />
 					{/* <GamepadController

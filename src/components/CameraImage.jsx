@@ -7,7 +7,12 @@ const fpsRecords = [];
 const pingRecords = [];
 let frameCounter = 0;
 
-const CameraImage = ({ imageQuality }) => {
+const CameraImage = ({
+	imageQuality,
+	setTrackablesData,
+	selectedIdFromTrackablesList,
+	setSelectedIdFromTrackablesList,
+}) => {
 	const [fps, setFps] = useState(0);
 	const [ping, setPing] = useState(0);
 	const [health, setHealth] = useState(''); // green, yellow, red
@@ -82,7 +87,7 @@ const CameraImage = ({ imageQuality }) => {
 				pingRecords.shift();
 			}
 
-			setStreamData({
+			const trackablesData = {
 				rectangles: Object.keys(data.coordinates).map((id) => ({
 					id,
 					x1: data.coordinates[id][0],
@@ -90,20 +95,24 @@ const CameraImage = ({ imageQuality }) => {
 					x2: data.coordinates[id][2],
 					y2: data.coordinates[id][3],
 				})),
-
+			};
+			setStreamData({
+				...trackablesData,
 				imageUrl: `data:image/jpeg;base64,${data.image
 					.split(';base64,')
 					.pop()}`,
 				image_size: data.image_size,
 			});
 
+			setTrackablesData(trackablesData);
+
 			const boundingRect = data.coordinates[selectedId];
 			const centerOfTheImage = data.image_size.map((size) => size / 2);
-			socket.emit('follow', {
-				bounding_box: boundingRect ?? [],
-				center: centerOfTheImage,
-				isReleased: selectedId !== null ? false : true,
-			});
+			// socket.emit('follow', {
+			// 	bounding_box: boundingRect ?? [],
+			// 	center: centerOfTheImage,
+			// 	isReleased: selectedId !== null ? false : true,
+			// });
 		};
 
 		socket.on('image_stream', handleImageStream);
@@ -186,6 +195,14 @@ const CameraImage = ({ imageQuality }) => {
 		socket.emit('set_image_quality', imageQuality);
 	}, [imageQuality, socket, isConnected]);
 
+	useEffect(() => {
+		if (!isConnected) return;
+		console.log(
+			'selectedIdFromTrackablesList',
+			selectedIdFromTrackablesList
+		);
+		setSelectedId(selectedIdFromTrackablesList);
+	}, [socket, isConnected, selectedIdFromTrackablesList]);
 	return (
 		<div className='relative'>
 			{fps && ping ? (
