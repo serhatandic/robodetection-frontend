@@ -54,6 +54,7 @@ const Layout = ({ connectionStatus }) => {
 						setSelectedIdFromTrackablesList={
 							setSelectedIdFromTrackablesList
 						}
+						currentlyTrackingId={currentlyTrackingId}
 						shouldClearTrackables={shouldClearTrackables}
 						setShouldClearTrackables={setShouldClearTrackables}
 					/>

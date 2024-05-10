@@ -206,7 +206,7 @@ const CameraImage = ({
 
 		setCurrentlyTrackingId(selectedId);
 	}, [socket, isConnected, selectedId, setCurrentlyTrackingId]);
-	
+
 	return (
 		<div className='relative'>
 			{fps && ping ? (

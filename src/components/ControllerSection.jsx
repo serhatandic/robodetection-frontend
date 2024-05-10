@@ -180,7 +180,7 @@ const ControllerSection = ({
 
 	return (
 		<>
-			<div className='w-full h-full md:max-h-[50%] flex justify-between gap-4 flex-col md:flex-row'>
+			<div className='w-full h-full flex justify-between gap-4 flex-col md:flex-row'>
 				<InfoSection
 					trackable={trackable}
 					trackStatus={trackStatus}
@@ -189,7 +189,7 @@ const ControllerSection = ({
 					shouldClearActivityLog={shouldClearActivityLog}
 					setShouldClearActivityLog={setShouldClearActivityLog}
 				/>
-				<Box className='w-full md:w-1/3 flex md:flex-col items-center justify-between h-full flex-row gap-4 '>
+				<Box className='w-full md:w-1/3 flex md:flex-col items-center justify-between h-full flex-row gap-4'>
 					{inputMethod === 'keyboard' ? (
 						<div className='w-full flex flex-col items-center md:h-2/3 justify-between'>
 							<KeyboardController

@@ -14,6 +14,7 @@ function TrackablesList({
 	selectedIdFromTrackablesList,
 	shouldClearTrackables,
 	setShouldClearTrackables,
+	currentlyTrackingId,
 }) {
 	const [rows, setRows] = useState([]);
 
@@ -111,6 +112,10 @@ function TrackablesList({
 			return;
 		}
 	}, [trackStatus]);
+
+	useEffect(() => {
+		setSelectedIdFromTrackablesList(currentlyTrackingId);
+	}, [currentlyTrackingId, setSelectedIdFromTrackablesList]);
 
 	const handleCellClick = (params) => {
 		// handle trackorstop clicks only
