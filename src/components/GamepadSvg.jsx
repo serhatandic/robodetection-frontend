@@ -31,7 +31,6 @@ function GamepadSvg({
 	};
 
 	const handleRequest = async (key) => {
-		console.log(key);
 		sendRequest(key);
 	};
 	const createTransform = (direction) => {

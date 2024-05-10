@@ -23,10 +23,20 @@ const columns = [
 ];
 
 const socketUrl = import.meta.env.VITE_SOCKET_URL;
-const InfoSection = ({ currentlyTrackingId }) => {
+const InfoSection = ({
+	currentlyTrackingId,
+	shouldClearActivityLog,
+	setShouldClearActivityLog,
+}) => {
 	const { socket, isConnected } = useSocket(socketUrl);
 	const [activityLogId, setActivityLogId] = useState(-1);
-	const [logStack, setLogStack] = useState([]);
+	const [logStack, setLogStack] = useState([
+		{
+			id: 0,
+			timestamp: new Date(),
+			activitylog: 'Activity log initialized',
+		},
+	]);
 	const [prev, setPrev] = useState(currentlyTrackingId);
 
 	const logs = {
@@ -94,9 +104,17 @@ const InfoSection = ({ currentlyTrackingId }) => {
 			}
 			return [];
 		});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [activityLogId, isConnected]);
+
+	useEffect(() => {
+		if (shouldClearActivityLog) {
+			setLogStack([]);
+			setShouldClearActivityLog(false);
+		}
+	}, [setShouldClearActivityLog, shouldClearActivityLog]);
 	return (
-		<div className=' w-full max-h-[40vh]'>
+		<div className='w-full'>
 			<DataGrid
 				className=' mb-2'
 				rows={prev ? logStack : []}

@@ -5,6 +5,7 @@ import InfoSection from './InfoSection';
 import Button from '@mui/material/Button';
 import useSocket from '../hooks/useSocket';
 import JoystickWrapper from './JoystickWrapper';
+import Box from '@mui/material/Box';
 
 const UP = 'i';
 const LEFT = 'j';
@@ -23,6 +24,9 @@ const ControllerSection = ({
 	trackStatus,
 	handleTrackStatus,
 	currentlyTrackingId,
+	setShouldClearTrackables,
+	setShouldClearActivityLog,
+	shouldClearActivityLog,
 }) => {
 	// create a ref (reference) for each button
 	// ref.current is the corresponding button
@@ -176,58 +180,72 @@ const ControllerSection = ({
 
 	return (
 		<>
-			{/* <div className='flex gap-2 mb-2'>
-				<div className=' bg-gray-100 flex items-center p-2 rounded-lg w-fit'>
-					Speed:
-				</div>
-				<div className=' bg-gray-100 flex items-center p-2 rounded-lg w-fit'>
-					Direction:
-				</div>
-				<div className=' bg-gray-100 flex items-center p-2 rounded-lg w-fit'>
-					Currently Tracking:
-				</div>
-			</div> */}
-			<div className='w-full h-full max-h-[50%] flex justify-between'>
+			<div className='w-full h-full md:max-h-[50%] flex justify-between gap-4 flex-col md:flex-row'>
 				<InfoSection
 					trackable={trackable}
 					trackStatus={trackStatus}
 					handleTrackStatus={handleTrackStatus}
 					currentlyTrackingId={currentlyTrackingId}
+					shouldClearActivityLog={shouldClearActivityLog}
+					setShouldClearActivityLog={setShouldClearActivityLog}
 				/>
-				{inputMethod === 'keyboard' ? (
-					<div className='w-1/3 flex flex-col justify-between items-center ml-2'>
-						<KeyboardController
-							connectionStatus={connectionStatus}
-							handleRequest={handleRequest}
-							upRef={upRef}
-							leftRef={leftRef}
-							downRef={downRef}
-							rightRef={rightRef}
-							upRightRef={upRightRef}
-							upLeftRef={upLeftRef}
-							downLeftRef={downLeftRef}
-							downRightRef={downRightRef}
-						/>
+				<Box className='w-full md:w-1/3 flex md:flex-col items-center justify-between h-full flex-row gap-4 '>
+					{inputMethod === 'keyboard' ? (
+						<div className='w-full flex flex-col items-center md:h-2/3 justify-between'>
+							<KeyboardController
+								connectionStatus={connectionStatus}
+								handleRequest={handleRequest}
+								upRef={upRef}
+								leftRef={leftRef}
+								downRef={downRef}
+								rightRef={rightRef}
+								upRightRef={upRightRef}
+								upLeftRef={upLeftRef}
+								downLeftRef={downLeftRef}
+								downRightRef={downRightRef}
+							/>
+							<Button
+								className='w-full'
+								variant='contained'
+								onClick={toggleInputMethod}
+							>
+								Switch to Joystick
+							</Button>
+						</div>
+					) : (
+						<div className='w-full flex flex-col items-center md:h-2/3 justify-between h-full gap-4 '>
+							<JoystickWrapper />
+							<Button
+								className='w-full'
+								variant='contained'
+								onClick={toggleInputMethod}
+							>
+								Switch to Keyboard
+							</Button>
+						</div>
+					)}
+					<Box className='flex flex-col gap-2 w-full h-full justify-end md:'>
 						<Button
-							className='w-full'
+							onClick={() => {
+								setShouldClearTrackables(true);
+							}}
 							variant='contained'
-							onClick={toggleInputMethod}
 						>
-							Switch to Joystick
+							Clear Track List
 						</Button>
-					</div>
-				) : (
-					<div className='w-1/3 h-full flex flex-col justify-between items-center ml-2'>
-						<JoystickWrapper />
 						<Button
-							className='w-full'
+							onClick={() => {
+								setShouldClearActivityLog(true);
+							}}
 							variant='contained'
-							onClick={toggleInputMethod}
 						>
-							Switch to Keyboard
+							Clear Activity Log
 						</Button>
-					</div>
-				)}
+						<Button variant='contained' color='secondary'>
+							Return to Base
+						</Button>
+					</Box>
+				</Box>
 			</div>
 		</>
 	);

@@ -12,9 +12,17 @@ function TrackablesList({
 	trackablesData,
 	setSelectedIdFromTrackablesList,
 	selectedIdFromTrackablesList,
+	shouldClearTrackables,
+	setShouldClearTrackables,
 }) {
 	const [rows, setRows] = useState([]);
 
+	useEffect(() => {
+		if (shouldClearTrackables) {
+			setRows([]);
+			setShouldClearTrackables(false);
+		}
+	}, [shouldClearTrackables, setShouldClearTrackables]);
 	const columns = [
 		{ field: 'id', headerName: 'ID' },
 		{ field: 'status', headerName: 'Status' },

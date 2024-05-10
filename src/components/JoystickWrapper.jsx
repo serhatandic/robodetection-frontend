@@ -2,6 +2,7 @@ import { Joystick } from 'react-joystick-component';
 import useSocket from '../hooks/useSocket';
 import SignalConverter from '../utils/signalconverter';
 import { useEffect } from 'react';
+import { Box } from '@mui/material';
 
 const UP = 'i';
 const LEFT = 'j';
@@ -83,15 +84,17 @@ function JoystickWrapper() {
 	};
 
 	return (
-		<Joystick
-			size={150}
-			sticky={false}
-			baseColor='#000' //'#87CEFA'
-			stickColor='#fff' //'#FF7F50'
-			move={(update) => signalConverter.onMove(update)}
-			start={(update) => signalConverter.onMove(update)}
-			stop={() => signalConverter.onStop()}
-		/>
+		<Box className='h-full'>
+			<Joystick
+				size={100}
+				sticky={false}
+				baseColor='#000' //'#87CEFA'
+				stickColor='#fff' //'#FF7F50'
+				move={(update) => signalConverter.onMove(update)}
+				start={(update) => signalConverter.onMove(update)}
+				stop={() => signalConverter.onStop()}
+			/>
+		</Box>
 	);
 }
 

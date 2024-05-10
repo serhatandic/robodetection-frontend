@@ -14,6 +14,8 @@ const Layout = ({ connectionStatus }) => {
 	const [selectedIdFromTrackablesList, setSelectedIdFromTrackablesList] =
 		useState(null);
 	const [currentlyTrackingId, setCurrentlyTrackingId] = useState(null);
+	const [shouldClearTrackables, setShouldClearTrackables] = useState(false);
+	const [shouldClearActivityLog, setShouldClearActivityLog] = useState(false);
 
 	const handleTrackStatus = (status) => {
 		setTrackStatus(status);
@@ -37,6 +39,9 @@ const Layout = ({ connectionStatus }) => {
 						handleTrackStatus={handleTrackStatus}
 						trackStatus={trackStatus}
 						currentlyTrackingId={currentlyTrackingId}
+						shouldClearActivityLog={shouldClearActivityLog}
+						setShouldClearActivityLog={setShouldClearActivityLog}
+						setShouldClearTrackables={setShouldClearTrackables}
 					/>
 				</div>
 				<div className='w-full h-full flex flex-col p-1 gap-2'>
@@ -49,6 +54,8 @@ const Layout = ({ connectionStatus }) => {
 						setSelectedIdFromTrackablesList={
 							setSelectedIdFromTrackablesList
 						}
+						shouldClearTrackables={shouldClearTrackables}
+						setShouldClearTrackables={setShouldClearTrackables}
 					/>
 					<Map />
 					{/* <GamepadController
