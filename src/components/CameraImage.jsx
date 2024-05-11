@@ -45,7 +45,7 @@ const CameraImage = ({
 
 	useEffect(() => {
 		if (!isConnected) return;
-		// request the initial stream
+		// request stream every second
 		socket.emit('request_stream');
 	}, [socket, isConnected]);
 

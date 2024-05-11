@@ -14,8 +14,6 @@ const Layout = ({ connectionStatus }) => {
 	const [selectedIdFromTrackablesList, setSelectedIdFromTrackablesList] =
 		useState(null);
 	const [currentlyTrackingId, setCurrentlyTrackingId] = useState(null);
-	const [shouldClearTrackables, setShouldClearTrackables] = useState(false);
-	const [shouldClearActivityLog, setShouldClearActivityLog] = useState(false);
 
 	const handleTrackStatus = (status) => {
 		setTrackStatus(status);
@@ -23,8 +21,8 @@ const Layout = ({ connectionStatus }) => {
 
 	return (
 		<ThemeProvider theme={theme}>
-			<div className=' h-full w-full flex flex-col md:flex-row'>
-				<div className='w-full h-full flex flex-col p-1 gap-2 justify-between'>
+			<div className=' h-[200vh] md:h-[98vh] w-full flex flex-col md:flex-row'>
+				<div className='w-full h-[100vh] md:h-full flex flex-col p-1 gap-2 justify-between '>
 					<ImageStream
 						handleTrackStatus={handleTrackStatus}
 						trackStatus={trackStatus}
@@ -39,12 +37,10 @@ const Layout = ({ connectionStatus }) => {
 						handleTrackStatus={handleTrackStatus}
 						trackStatus={trackStatus}
 						currentlyTrackingId={currentlyTrackingId}
-						shouldClearActivityLog={shouldClearActivityLog}
-						setShouldClearActivityLog={setShouldClearActivityLog}
-						setShouldClearTrackables={setShouldClearTrackables}
+						setCurrentlyTrackingId={setCurrentlyTrackingId}
 					/>
 				</div>
-				<div className='w-full h-full flex flex-col p-1 gap-2'>
+				<div className='w-full h-[100vh] md:h-full flex flex-col p-1 gap-2'>
 					<TrackablesList
 						trackStatus={trackStatus}
 						trackablesData={trackablesData}
@@ -55,8 +51,6 @@ const Layout = ({ connectionStatus }) => {
 							setSelectedIdFromTrackablesList
 						}
 						currentlyTrackingId={currentlyTrackingId}
-						shouldClearTrackables={shouldClearTrackables}
-						setShouldClearTrackables={setShouldClearTrackables}
 					/>
 					<Map />
 					{/* <GamepadController

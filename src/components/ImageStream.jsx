@@ -19,7 +19,7 @@ const ImageStream = ({
 	};
 
 	return (
-		<div className='w-full h-full flex justify-center items-center '>
+		<div className='w-full h-2/3 flex justify-center items-center '>
 			{trackStatus ? (
 				<div className='w-full h-full flex flex-col gap-2'>
 					<div className='backdrop-blur-sm bg-gray-200 w-full h-full flex justify-center items-center'>

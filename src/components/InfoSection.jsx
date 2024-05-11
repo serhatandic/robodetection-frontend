@@ -1,10 +1,16 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { DataGrid } from '@mui/x-data-grid';
+import {
+	DataGrid,
+	GridFooterContainer,
+	GridPagination,
+} from '@mui/x-data-grid';
 import useSocket from '../hooks/useSocket';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
+import NotInterestedIcon from '@mui/icons-material/NotInterested';
+import { Box, IconButton } from '@mui/material';
 TimeAgo.addLocale(en);
 const timeAgo = new TimeAgo('en-US');
 
@@ -23,11 +29,7 @@ const columns = [
 ];
 
 const socketUrl = import.meta.env.VITE_SOCKET_URL;
-const InfoSection = ({
-	currentlyTrackingId,
-	shouldClearActivityLog,
-	setShouldClearActivityLog,
-}) => {
+const InfoSection = ({ currentlyTrackingId }) => {
 	const { socket, isConnected } = useSocket(socketUrl);
 	const [activityLogId, setActivityLogId] = useState(-1);
 	const [logStack, setLogStack] = useState([
@@ -38,6 +40,23 @@ const InfoSection = ({
 		},
 	]);
 	const [prev, setPrev] = useState(currentlyTrackingId);
+
+	const memoizedSlots = useMemo(
+		() => ({
+			footer: (props) => (
+				<GridFooterContainer>
+					<GridPagination {...props} />
+
+					<Box className='pr-2'>
+						<IconButton onClick={() => setLogStack([])}>
+							<NotInterestedIcon />
+						</IconButton>
+					</Box>
+				</GridFooterContainer>
+			),
+		}),
+		[setLogStack]
+	);
 
 	const logs = {
 		0: `Released tracking of target ${
@@ -62,6 +81,9 @@ const InfoSection = ({
 			currentlyTrackingId ? currentlyTrackingId : prev
 		} is too close for tracking`,
 		7: `Initiating tracking of target ${
+			currentlyTrackingId ? currentlyTrackingId : prev
+		}`,
+		8: `Target reached; stopping tracking of target ${
 			currentlyTrackingId ? currentlyTrackingId : prev
 		}`,
 	};
@@ -104,21 +126,17 @@ const InfoSection = ({
 			}
 			return [];
 		});
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [activityLogId, isConnected]);
 
-	useEffect(() => {
-		if (shouldClearActivityLog) {
-			setLogStack([]);
-			setShouldClearActivityLog(false);
-		}
-	}, [setShouldClearActivityLog, shouldClearActivityLog]);
 	return (
-		<div className='w-2/3'>
+		<div className='md:w-2/3 h-full'>
 			<DataGrid
 				className=' mb-2'
 				rows={prev ? logStack : []}
 				columns={columns}
+				slots={memoizedSlots}
 			/>
 		</div>
 	);

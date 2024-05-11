@@ -24,9 +24,7 @@ const ControllerSection = ({
 	trackStatus,
 	handleTrackStatus,
 	currentlyTrackingId,
-	setShouldClearTrackables,
-	setShouldClearActivityLog,
-	shouldClearActivityLog,
+	setCurrentlyTrackingId,
 }) => {
 	// create a ref (reference) for each button
 	// ref.current is the corresponding button
@@ -179,75 +177,73 @@ const ControllerSection = ({
 	}, []); //single run
 
 	return (
-		<>
-			<div className='w-full h-full flex justify-between gap-4 flex-col md:flex-row'>
-				<InfoSection
-					trackable={trackable}
-					trackStatus={trackStatus}
-					handleTrackStatus={handleTrackStatus}
-					currentlyTrackingId={currentlyTrackingId}
-					shouldClearActivityLog={shouldClearActivityLog}
-					setShouldClearActivityLog={setShouldClearActivityLog}
-				/>
-				<Box className='w-full md:w-1/3 flex md:flex-col items-center justify-between h-full flex-row gap-4'>
-					{inputMethod === 'keyboard' ? (
-						<div className='w-full flex flex-col items-center md:h-2/3 justify-between'>
-							<KeyboardController
-								connectionStatus={connectionStatus}
-								handleRequest={handleRequest}
-								upRef={upRef}
-								leftRef={leftRef}
-								downRef={downRef}
-								rightRef={rightRef}
-								upRightRef={upRightRef}
-								upLeftRef={upLeftRef}
-								downLeftRef={downLeftRef}
-								downRightRef={downRightRef}
-							/>
-							<Button
-								className='w-full'
-								variant='contained'
-								onClick={toggleInputMethod}
-							>
-								Switch to Joystick
-							</Button>
-						</div>
-					) : (
-						<div className='w-full flex flex-col items-center md:h-2/3 justify-between h-full gap-4 '>
-							<JoystickWrapper />
-							<Button
-								className='w-full'
-								variant='contained'
-								onClick={toggleInputMethod}
-							>
-								Switch to Keyboard
-							</Button>
-						</div>
-					)}
-					<Box className='flex flex-col gap-2 w-full h-full justify-end md:'>
+		<div className='w-full h-1/3 flex justify-between gap-4 flex-col md:flex-row'>
+			<InfoSection
+				trackable={trackable}
+				trackStatus={trackStatus}
+				handleTrackStatus={handleTrackStatus}
+				currentlyTrackingId={currentlyTrackingId}
+			/>
+			<Box className='w-full md:w-1/3 flex md:flex-col items-center justify-between h-full flex-row gap-4'>
+				{inputMethod === 'keyboard' ? (
+					<div className='w-full flex flex-col items-center md:h-2/3 justify-between'>
+						<KeyboardController
+							connectionStatus={connectionStatus}
+							handleRequest={handleRequest}
+							upRef={upRef}
+							leftRef={leftRef}
+							downRef={downRef}
+							rightRef={rightRef}
+							upRightRef={upRightRef}
+							upLeftRef={upLeftRef}
+							downLeftRef={downLeftRef}
+							downRightRef={downRightRef}
+						/>
 						<Button
-							onClick={() => {
-								setShouldClearTrackables(true);
-							}}
+							className='w-full'
 							variant='contained'
+							onClick={toggleInputMethod}
 						>
-							Clear Track List
+							Joystick
 						</Button>
+					</div>
+				) : (
+					<div className='w-full flex flex-col items-center md:h-2/3 justify-between h-full gap-4 '>
+						<JoystickWrapper />
 						<Button
-							onClick={() => {
-								setShouldClearActivityLog(true);
-							}}
+							className='w-full'
 							variant='contained'
+							onClick={toggleInputMethod}
 						>
-							Clear Activity Log
+							Keyboard
 						</Button>
-						<Button variant='contained' color='secondary'>
-							Return to Base
-						</Button>
-					</Box>
+					</div>
+				)}
+				<Box className='flex flex-col gap-2 w-full h-full justify-end '>
+					<Button
+						variant='contained'
+						color='secondary'
+						onClick={() => {
+							socket.emit('cancel_goals');
+							setCurrentlyTrackingId(null);
+						}}
+					>
+						Cancel Goals
+					</Button>
+					<Button
+						variant='contained'
+						color='secondary'
+						className='whitespace-nowrap'
+						onClick={() => {
+							setCurrentlyTrackingId(null);
+							socket.emit('return_to_base');
+						}}
+					>
+						Return to Base
+					</Button>
 				</Box>
-			</div>
-		</>
+			</Box>
+		</div>
 	);
 };
 

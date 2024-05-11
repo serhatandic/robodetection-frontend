@@ -1,9 +1,15 @@
 /* eslint-disable react/prop-types */
-import { DataGrid } from '@mui/x-data-grid';
-import { useEffect, useState } from 'react';
+import {
+	DataGrid,
+	GridFooterContainer,
+	GridPagination,
+} from '@mui/x-data-grid';
+import { useEffect, useState, useMemo } from 'react';
 import Button from '@mui/material/Button';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
+import { Box, IconButton } from '@mui/material';
+import NotInterestedIcon from '@mui/icons-material/NotInterested';
 TimeAgo.addLocale(en);
 const timeAgo = new TimeAgo('en-US');
 
@@ -12,18 +18,30 @@ function TrackablesList({
 	trackablesData,
 	setSelectedIdFromTrackablesList,
 	selectedIdFromTrackablesList,
-	shouldClearTrackables,
-	setShouldClearTrackables,
 	currentlyTrackingId,
 }) {
 	const [rows, setRows] = useState([]);
 
-	useEffect(() => {
-		if (shouldClearTrackables) {
-			setRows([]);
-			setShouldClearTrackables(false);
-		}
-	}, [shouldClearTrackables, setShouldClearTrackables]);
+	const memoizedSlots = useMemo(
+		() => ({
+			footer: (props) => (
+				<GridFooterContainer>
+					<GridPagination {...props} />
+
+					<Box className='pr-2'>
+						<IconButton
+							onClick={() => {
+								setRows([]);
+							}}
+						>
+							<NotInterestedIcon />
+						</IconButton>
+					</Box>
+				</GridFooterContainer>
+			),
+		}),
+		[setRows]
+	);
 	const columns = [
 		{ field: 'id', headerName: 'ID' },
 		{ field: 'status', headerName: 'Status' },
@@ -129,8 +147,8 @@ function TrackablesList({
 	};
 
 	return (
-		<div className='h-full overflow-auto'>
-			<DataGrid rows={rows} columns={columns} />
+		<div className='h-full'>
+			<DataGrid rows={rows} columns={columns} slots={memoizedSlots} />
 		</div>
 	);
 }
