@@ -18,9 +18,7 @@
 		"javascript-time-ago": "^2.5.10",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
-		"react-gamepad": "SBRK/react-gamepad",
 		"react-joystick-component": "^6.2.1",
-		"react-player": "^2.14.1",
 		"socket.io-client": "^4.7.5"
 	},
 	"devDependencies": {
