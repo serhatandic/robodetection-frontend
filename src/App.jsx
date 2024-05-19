@@ -6,13 +6,15 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import useSocket from './hooks/useSocket';
-
+import useGamepad from './hooks/useGamepad';
 const socketUrl = import.meta.env.VITE_SOCKET_URL;
 
 function App() {
 	const [connectionStatus, setConnectionStatus] = useState('connecting'); // connected, connecting, failed
 	const [modalStatus, setModalStatus] = useState(true);
 	const { isConnected } = useSocket(socketUrl);
+	const { gamepad, leftStick, rightStick } = useGamepad();
+
 	useEffect(() => {
 		if (isConnected) {
 			setConnectionStatus('connected');
