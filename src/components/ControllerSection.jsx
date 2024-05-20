@@ -6,6 +6,7 @@ import Button from '@mui/material/Button';
 import useSocket from '../hooks/useSocket';
 import JoystickWrapper from './JoystickWrapper';
 import Box from '@mui/material/Box';
+import useGamepad from '../hooks/useGamepad';
 
 const UP = 'i';
 const LEFT = 'j';
@@ -28,6 +29,8 @@ const ControllerSection = ({
 }) => {
 	// create a ref (reference) for each button
 	// ref.current is the corresponding button
+	const { leftStick } = useGamepad();
+
 	const upRef = useRef(null);
 	const leftRef = useRef(null);
 	const downRef = useRef(null);
@@ -175,6 +178,34 @@ const ControllerSection = ({
 			document.removeEventListener('keydown', handleKeyDown);
 		};
 	}, []); //single run
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+			if (leftStick === 'up') {
+				handleRequest(UP);
+			} else if (leftStick === 'left') {
+				handleRequest(LEFT);
+			} else if (leftStick === 'down') {
+				handleRequest(DOWN);
+			} else if (leftStick === 'right') {
+				handleRequest(RIGHT);
+			} else if (leftStick === 'up-right') {
+				handleRequest(UPRIGHT);
+			} else if (leftStick === 'up-left') {
+				handleRequest(UPLEFT);
+			} else if (leftStick === 'down-left') {
+				handleRequest(DOWNLEFT);
+			} else if (leftStick === 'down-right') {
+				handleRequest(DOWNRIGHT);
+			}
+		}, 500);
+
+		return () => {
+			clearInterval(interval);
+		};
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [leftStick]);
 
 	return (
 		<div className='w-full h-1/3 flex justify-between gap-4 flex-col md:flex-row'>

@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState, useRef } from 'react';
 import useSocket from '../hooks/useSocket';
+import useGamepad from '../hooks/useGamepad';
 
 const socketUrl = import.meta.env.VITE_SOCKET_URL;
 const fpsRecords = [];
@@ -13,10 +14,12 @@ const CameraImage = ({
 	selectedIdFromTrackablesList,
 	setCurrentlyTrackingId,
 }) => {
+	const { button, pad } = useGamepad();
+
 	const [fps, setFps] = useState(0);
 	const [ping, setPing] = useState(0);
 	const [health, setHealth] = useState(''); // green, yellow, red
-	const [hoveredRectIndex, setHoveredRectIndex] = useState(null); // New state to track hovered rectangle
+	const [hoveredRectIndex, setHoveredRectIndex] = useState(0); // New state to track hovered rectangle
 	const [selectedId, setSelectedId] = useState(null);
 	const [streamData, setStreamData] = useState({
 		imageUrl: null,
@@ -34,6 +37,13 @@ const CameraImage = ({
 				x1: 300,
 				y2: 300,
 				y1: 200,
+			},
+			{
+				id: 3,
+				x2: 600,
+				x1: 500,
+				y2: 400,
+				y1: 300,
 			},
 		],
 		image_size: [640, 480], // width, height
@@ -206,6 +216,30 @@ const CameraImage = ({
 
 		setCurrentlyTrackingId(selectedId);
 	}, [socket, isConnected, selectedId, setCurrentlyTrackingId]);
+
+	useEffect(() => {
+		// button == 'b' release the selected rectangle, button == 'a' select the highlighted rectangle. pad == 'right' highlight next rectangle, pad == 'left' highlight previous rectangle.
+		if (button === 'b') {
+			setSelectedId(null);
+		} else if (button === 'a') {
+			setSelectedId(hoveredRectIndex);
+		}
+		if (pad === 'right') {
+			const nextIndex = Math.max(
+				1,
+				(hoveredRectIndex + 1) % (streamData.rectangles.length + 1)
+			);
+			setHoveredRectIndex(nextIndex);
+		} else if (pad === 'left') {
+			const previousIndex = Math.max(
+				1,
+				(hoveredRectIndex - 1 + streamData.rectangles.length + 1) %
+					(streamData.rectangles.length + 1)
+			);
+			setHoveredRectIndex(previousIndex);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [button, pad, streamData.rectangles.length]);
 
 	return (
 		<div className='relative'>
