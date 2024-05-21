@@ -225,17 +225,40 @@ const CameraImage = ({
 			setSelectedId(hoveredRectIndex);
 		}
 		if (pad === 'right') {
-			const nextIndex = Math.max(
-				1,
-				(hoveredRectIndex + 1) % (streamData.rectangles.length + 1)
-			);
+			if (hoveredRectIndex === null) {
+				setHoveredRectIndex(streamData.rectangles[0].id);
+				return;
+			}
+			// go over streamdata.rectangles array, set the next id in a circular manner
+			let nextIndex = null;
+
+			for (let i = 0; i < streamData.rectangles.length; i++) {
+				if (streamData.rectangles[i].id === hoveredRectIndex) {
+					nextIndex =
+						streamData.rectangles[
+							(i + 1) % streamData.rectangles.length
+						].id;
+					break;
+				}
+			}
 			setHoveredRectIndex(nextIndex);
 		} else if (pad === 'left') {
-			const previousIndex = Math.max(
-				1,
-				(hoveredRectIndex - 1 + streamData.rectangles.length + 1) %
-					(streamData.rectangles.length + 1)
-			);
+			if (hoveredRectIndex === null) {
+				setHoveredRectIndex(streamData.rectangles[0].id);
+				return;
+			}
+
+			let previousIndex = null;
+			for (let i = 0; i < streamData.rectangles.length; i++) {
+				if (streamData.rectangles[i].id === hoveredRectIndex) {
+					previousIndex =
+						streamData.rectangles[
+							(i - 1 + streamData.rectangles.length) %
+								streamData.rectangles.length
+						].id;
+					break;
+				}
+			}
 			setHoveredRectIndex(previousIndex);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
