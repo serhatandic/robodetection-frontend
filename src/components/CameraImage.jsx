@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState, useRef } from 'react';
 import useGamepad from '../hooks/useGamepad';
+import { throttle } from 'lodash';
 
 const fpsRecords = [];
 const pingRecords = [];
@@ -52,16 +53,20 @@ const CameraImage = ({
 	const lastFrameTime = useRef(Date.now());
 	const lastFPSUpdateTime = useRef(Date.now());
 
+	const throttledRequestStream = throttle(() => {
+		socket.emit('request_stream');
+		// max 35 fps
+	}, 29);
+
 	useEffect(() => {
 		if (!isConnected) return;
-		// request stream every second
 		socket.emit('request_stream');
 	}, [socket, isConnected]);
 
 	useEffect(() => {
 		if (!isConnected) return;
 		const handleImageStream = (data) => {
-			socket.emit('request_stream');
+			throttledRequestStream();
 			frameCounter++;
 			const now = Date.now();
 			const deltaTime = now - lastFrameTime.current;
@@ -129,7 +134,7 @@ const CameraImage = ({
 		return () => {
 			socket.off('image_stream', handleImageStream);
 		};
-	}, [socket, isConnected, selectedId, setTrackablesData]);
+	}, [socket, isConnected, selectedId, setTrackablesData, throttledRequestStream]);
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
