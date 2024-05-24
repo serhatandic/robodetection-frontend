@@ -1,9 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState, useRef } from 'react';
-import useSocket from '../hooks/useSocket';
 import useGamepad from '../hooks/useGamepad';
 
-const socketUrl = import.meta.env.VITE_SOCKET_URL;
 const fpsRecords = [];
 const pingRecords = [];
 let frameCounter = 0;
@@ -13,6 +11,8 @@ const CameraImage = ({
 	setTrackablesData,
 	selectedIdFromTrackablesList,
 	setCurrentlyTrackingId,
+	socket,
+	isConnected,
 }) => {
 	const { button, pad } = useGamepad();
 
@@ -49,7 +49,6 @@ const CameraImage = ({
 		image_size: [640, 480], // width, height
 	});
 	const canvasRef = useRef(null);
-	const { socket, isConnected } = useSocket(socketUrl); // Custom hook to manage socket connection
 	const lastFrameTime = useRef(Date.now());
 	const lastFPSUpdateTime = useRef(Date.now());
 

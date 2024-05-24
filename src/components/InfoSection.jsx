@@ -6,7 +6,6 @@ import {
 	GridFooterContainer,
 	GridPagination,
 } from '@mui/x-data-grid';
-import useSocket from '../hooks/useSocket';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
@@ -28,9 +27,7 @@ const columns = [
 	},
 ];
 
-const socketUrl = import.meta.env.VITE_SOCKET_URL;
-const InfoSection = ({ currentlyTrackingId }) => {
-	const { socket, isConnected } = useSocket(socketUrl);
+const InfoSection = ({ currentlyTrackingId, socket, isConnected }) => {
 	const [activityLogId, setActivityLogId] = useState(-1);
 	const [logStack, setLogStack] = useState([
 		{

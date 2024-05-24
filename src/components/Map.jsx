@@ -1,10 +1,8 @@
-import useSocket from '../hooks/useSocket';
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
-const socketUrl = import.meta.env.VITE_SOCKET_URL;
 
-const Map = () => {
+const Map = ({ socket, isConnected }) => {
 	const [streamData, setStreamData] = useState({});
-	const { socket, isConnected } = useSocket(socketUrl); // Custom hook to manage socket connection
 
 	useEffect(() => {
 		if (!isConnected) return;

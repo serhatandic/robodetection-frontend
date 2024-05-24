@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState } from 'react';
 import ImageStream from './ImageStream';
 // import Map from './Map';
@@ -8,7 +9,8 @@ import PropTypes from 'prop-types';
 import theme from '../Theme';
 import { ThemeProvider } from '@mui/material/styles';
 import Map from './Map';
-const Layout = ({ connectionStatus }) => {
+
+const Layout = ({ connectionStatus, socket, isConnected }) => {
 	const [trackStatus, setTrackStatus] = useState(false);
 	const [trackablesData, setTrackablesData] = useState([]);
 	const [selectedIdFromTrackablesList, setSelectedIdFromTrackablesList] =
@@ -24,6 +26,8 @@ const Layout = ({ connectionStatus }) => {
 			<div className=' h-[200vh] md:h-[98vh] w-full flex flex-col md:flex-row'>
 				<div className='w-full h-[100vh] md:h-full flex flex-col p-1 gap-2 justify-between '>
 					<ImageStream
+						socket={socket}
+						isConnected={isConnected}
 						handleTrackStatus={handleTrackStatus}
 						trackStatus={trackStatus}
 						setTrackablesData={setTrackablesData}
@@ -33,6 +37,8 @@ const Layout = ({ connectionStatus }) => {
 						setCurrentlyTrackingId={setCurrentlyTrackingId}
 					/>
 					<ControllerSection
+						socket={socket}
+						isConnected={isConnected}
 						connectionStatus={connectionStatus}
 						handleTrackStatus={handleTrackStatus}
 						trackStatus={trackStatus}
@@ -52,7 +58,7 @@ const Layout = ({ connectionStatus }) => {
 						}
 						currentlyTrackingId={currentlyTrackingId}
 					/>
-					<Map />
+					<Map socket={socket} isConnected={isConnected} />
 					{/* <GamepadController
 						controller={1}
 						style={{ position: 'fixed', bottom: 100, right: 100 }}

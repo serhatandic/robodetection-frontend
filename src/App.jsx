@@ -11,7 +11,7 @@ const socketUrl = import.meta.env.VITE_SOCKET_URL;
 function App() {
 	const [connectionStatus, setConnectionStatus] = useState('connecting'); // connected, connecting, failed
 	const [modalStatus, setModalStatus] = useState(true);
-	const { isConnected } = useSocket(socketUrl);
+	const { socket, isConnected } = useSocket(socketUrl);
 
 	useEffect(() => {
 		if (isConnected) {
@@ -33,7 +33,11 @@ function App() {
 				<CircularProgress className='m-auto' />
 			) : (
 				<>
-					<Layout connectionStatus={connectionStatus} />
+					<Layout
+						connectionStatus={connectionStatus}
+						socket={socket}
+						isConnected={isConnected}
+					/>
 					<Modal
 						open={modalStatus}
 						onClose={() => {}}

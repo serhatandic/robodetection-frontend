@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 import KeyboardController from './KeyboardController';
 import InfoSection from './InfoSection';
 import Button from '@mui/material/Button';
-import useSocket from '../hooks/useSocket';
 import JoystickWrapper from './JoystickWrapper';
 import Box from '@mui/material/Box';
 import useGamepad from '../hooks/useGamepad';
@@ -17,8 +16,6 @@ const UPLEFT = 'u';
 const DOWNLEFT = 'm';
 const DOWNRIGHT = '.';
 
-const socketUrl = import.meta.env.VITE_SOCKET_URL;
-
 const ControllerSection = ({
 	trackable,
 	connectionStatus,
@@ -26,6 +23,8 @@ const ControllerSection = ({
 	handleTrackStatus,
 	currentlyTrackingId,
 	setCurrentlyTrackingId,
+	socket,
+	isConnected,
 }) => {
 	// create a ref (reference) for each button
 	// ref.current is the corresponding button
@@ -43,8 +42,6 @@ const ControllerSection = ({
 	const [pressedKeys, setPressedKeys] = useState(new Set());
 	const [inputMethod, setInputMethod] = useState('keyboard'); // Default to keyboard
 	const keyIntervals = useRef({});
-
-	const { socket, isConnected } = useSocket(socketUrl); // Custom hook to manage socket connection
 
 	const sendRequest = async (key) => {
 		if (!isConnected) return;
@@ -210,6 +207,8 @@ const ControllerSection = ({
 	return (
 		<div className='w-full h-1/3 flex justify-between gap-4 flex-col md:flex-row'>
 			<InfoSection
+				socket={socket}
+				isConnected={isConnected}
 				trackable={trackable}
 				trackStatus={trackStatus}
 				handleTrackStatus={handleTrackStatus}
@@ -240,7 +239,10 @@ const ControllerSection = ({
 					</div>
 				) : (
 					<div className='w-full flex flex-col items-center md:h-2/3 justify-between h-full gap-4 '>
-						<JoystickWrapper />
+						<JoystickWrapper
+							socket={socket}
+							isConnected={isConnected}
+						/>
 						<Button
 							className='w-full'
 							variant='contained'

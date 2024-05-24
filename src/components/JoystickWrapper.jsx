@@ -1,5 +1,5 @@
+/* eslint-disable react/prop-types */
 import { Joystick } from 'react-joystick-component';
-import useSocket from '../hooks/useSocket';
 import SignalConverter from '../utils/signalconverter';
 import { useEffect } from 'react';
 import { Box } from '@mui/material';
@@ -12,13 +12,10 @@ const UPRIGHT = 'o';
 const UPLEFT = 'u';
 const DOWNLEFT = 'm';
 const DOWNRIGHT = '.';
-const socketUrl = import.meta.env.VITE_SOCKET_URL;
 
 const signalConverter = new SignalConverter(100);
 
-function JoystickWrapper() {
-	const { socket, isConnected } = useSocket(socketUrl);
-
+function JoystickWrapper({ socket, isConnected }) {
 	useEffect(() => {
 		const handleMove = (event) => {
 			const direction = getDirection(event.x, event.y);

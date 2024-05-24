@@ -1,34 +1,41 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import io from 'socket.io-client';
+
+let socket;
 
 const useSocket = (url) => {
 	const [isConnected, setIsConnected] = useState(false);
-	const socketRef = useRef(null);
 
 	useEffect(() => {
-		// Initialize socket connection
-		socketRef.current = io(url);
+		if (!url) return;
+		// Check if the socket already exists
+		if (!socket) {
+			// Initialize socket connection
+			socket = io(url);
 
-		const socket = socketRef.current;
+			socket.on('connect', () => {
+				console.log('Socket connected');
+				setIsConnected(true);
+			});
 
-		socket.on('connect', () => {
-			console.log('Socket connected');
-			setIsConnected(true);
-		});
+			socket.on('disconnect', () => {
+				console.log('Socket disconnected');
+				setIsConnected(false);
+			});
+		}
 
-		socket.on('disconnect', () => {
-			console.log('Socket disconnected');
-			setIsConnected(false);
-		});
-
-		// Cleanup on component unmount
+		// Clean up on component unmount
 		return () => {
-			socket.disconnect();
+			console.log('unmount');
+			if (socket) {
+				socket.disconnect();
+				socket = null;
+			}
 		};
-	}, [url]); // Re-run the effect only if the URL changes
+	}, [url]);
 
 	// Expose the socket instance and the connection state
-	return { socket: socketRef.current, isConnected };
+	return { socket, isConnected };
 };
 
 export default useSocket;

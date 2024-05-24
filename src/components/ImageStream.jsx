@@ -11,6 +11,8 @@ const ImageStream = ({
 	setTrackablesData,
 	selectedIdFromTrackablesList,
 	setCurrentlyTrackingId,
+	socket,
+	isConnected,
 }) => {
 	const [imageQuality, setImageQuality] = useState(40);
 
@@ -24,6 +26,8 @@ const ImageStream = ({
 				<div className='w-full h-full flex flex-col gap-2'>
 					<div className='backdrop-blur-sm bg-gray-200 w-full h-full flex justify-center items-center'>
 						<CameraImage
+							socket={socket}
+							isConnected={isConnected}
 							imageQuality={imageQuality}
 							setTrackablesData={setTrackablesData}
 							selectedIdFromTrackablesList={
