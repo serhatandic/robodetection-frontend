@@ -147,7 +147,7 @@ function TrackablesList({
 	};
 
 	return (
-		<div className='h-full'>
+		<div className='h-full overflow-scroll'>
 			<DataGrid rows={rows} columns={columns} slots={memoizedSlots} />
 		</div>
 	);
