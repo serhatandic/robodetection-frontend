@@ -134,7 +134,13 @@ const CameraImage = ({
 		return () => {
 			socket.off('image_stream', handleImageStream);
 		};
-	}, [socket, isConnected, selectedId, setTrackablesData, throttledRequestStream]);
+	}, [
+		socket,
+		isConnected,
+		selectedId,
+		setTrackablesData,
+		throttledRequestStream,
+	]);
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
@@ -274,7 +280,7 @@ const CameraImage = ({
 				<div className='absolute top-0 left-0 bg-black bg-opacity-50 text-white p-2'>
 					<p>FPS: {fps}</p>
 					<div className='flex flex-row gap-2 items-center'>
-						<p>Ping: {ping}ms</p>
+						<p>Ping: </p>
 						<div
 							style={{
 								width: '20px',
