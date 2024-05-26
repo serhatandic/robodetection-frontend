@@ -1,10 +1,21 @@
 import { useState, useEffect } from 'react';
 
 const useGamepad = () => {
-	const [leftStick, setLeftStick] = useState(null); // 8 directions, up down left right, up-left, up-right, down-left, down-right
-	const [rightStick, setRightStick] = useState(null); // 8 directions, up down left right, up-left, up-right, down-left, down-right
+	const [leftStick, setLeftStick] = useState({
+		angle: null,
+		xVelocity: 0,
+		yVelocity: 0,
+		magnitude: 0,
+	});
+	const [rightStick, setRightStick] = useState({
+		angle: null,
+		xVelocity: 0,
+		yVelocity: 0,
+		magnitude: 0,
+	});
 	const [pad, setPad] = useState(null); // 4 directions, up (12), down (13), left (14) right (15)
 	const [button, setButton] = useState(null); // x, a, b, y (0, 1, 2, 3)
+
 	useEffect(() => {
 		const interval = setInterval(() => {
 			const gamepad = navigator.getGamepads()[0];
@@ -12,9 +23,11 @@ const useGamepad = () => {
 				return;
 			}
 
-			const axes = gamepad.axes.map((axis) => axis.toFixed(2));
-			setLeftStick(classifyStick(axes[0], axes[1]));
-			setRightStick(classifyStick(axes[2], axes[3]));
+			const axes = gamepad.axes.map((axis) =>
+				parseFloat(axis.toFixed(2))
+			);
+			setLeftStick(calculateStickVelocities(axes[0], axes[1]));
+			setRightStick(calculateStickVelocities(axes[2], axes[3]));
 
 			if (gamepad.buttons[12].pressed) {
 				setPad('up');
@@ -62,29 +75,19 @@ const useGamepad = () => {
 		};
 	}, []);
 
-	const classifyStick = (x, y) => {
-		const threshold = 0.5;
-		if (Math.abs(x) < threshold && Math.abs(y) < threshold) {
-			return 'center';
-		} else if (Math.abs(x) < threshold && y > threshold) {
-			return 'down';
-		} else if (Math.abs(x) < threshold && y < -threshold) {
-			return 'up';
-		} else if (x > threshold && Math.abs(y) < threshold) {
-			return 'right';
-		} else if (x < -threshold && Math.abs(y) < threshold) {
-			return 'left';
-		} else if (x > threshold && y > threshold) {
-			return 'down-right';
-		} else if (x > threshold && y < -threshold) {
-			return 'up-right';
-		} else if (x < -threshold && y > threshold) {
-			return 'down-left';
-		} else if (x < -threshold && y < -threshold) {
-			return 'up-left';
-		} else {
-			return 'center';
-		}
+	const calculateStickVelocities = (x, y) => {
+		const magnitude = Math.sqrt(x * x + y * y);
+		const angle = Math.atan2(y, x) * (180 / Math.PI); // Convert to degrees
+		const xVelocity = magnitude * Math.cos(angle * (Math.PI / 180));
+		const yVelocity = magnitude * Math.sin(angle * (Math.PI / 180));
+		// drop the fractions for each
+
+		return {
+			angle: parseInt(angle),
+			xVelocity: parseInt(xVelocity),
+			yVelocity: parseInt(yVelocity),
+			magnitude: parseInt(magnitude),
+		};
 	};
 
 	return { button, pad, leftStick, rightStick };

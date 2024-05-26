@@ -29,6 +29,7 @@ const ControllerSection = ({
 	// create a ref (reference) for each button
 	// ref.current is the corresponding button
 	const { leftStick } = useGamepad();
+	const leftStickRef = useRef(leftStick);
 
 	const upRef = useRef(null);
 	const leftRef = useRef(null);
@@ -163,6 +164,10 @@ const ControllerSection = ({
 	}, []);
 
 	useEffect(() => {
+		leftStickRef.current = leftStick;
+	}, [leftStick]);
+
+	useEffect(() => {
 		const handleKeyDown = (event) => {
 			if (event.ctrlKey && event.key === 's') {
 				event.preventDefault(); // Prevents the default action of Ctrl + S
@@ -177,32 +182,10 @@ const ControllerSection = ({
 	}, []); //single run
 
 	useEffect(() => {
-		const interval = setInterval(() => {
-			if (leftStick === 'up') {
-				handleRequest(UP);
-			} else if (leftStick === 'left') {
-				handleRequest(LEFT);
-			} else if (leftStick === 'down') {
-				handleRequest(DOWN);
-			} else if (leftStick === 'right') {
-				handleRequest(RIGHT);
-			} else if (leftStick === 'up-right') {
-				handleRequest(UPRIGHT);
-			} else if (leftStick === 'up-left') {
-				handleRequest(UPLEFT);
-			} else if (leftStick === 'down-left') {
-				handleRequest(DOWNLEFT);
-			} else if (leftStick === 'down-right') {
-				handleRequest(DOWNRIGHT);
-			}
-		}, 500);
-
-		return () => {
-			clearInterval(interval);
-		};
+		socket.emit('command360', leftStickRef.current);
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [leftStick]);
+	}, [leftStickRef.current]);
 
 	return (
 		<div className='w-full h-1/3 flex justify-between gap-4 flex-col md:flex-row'>
