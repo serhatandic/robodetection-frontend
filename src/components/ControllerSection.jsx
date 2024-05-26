@@ -28,8 +28,9 @@ const ControllerSection = ({
 }) => {
 	// create a ref (reference) for each button
 	// ref.current is the corresponding button
-	const { leftStick } = useGamepad();
+	const { leftStick, rightStick } = useGamepad();
 	const leftStickRef = useRef(leftStick);
+	const rightStickRef = useRef(rightStick);
 
 	const upRef = useRef(null);
 	const leftRef = useRef(null);
@@ -164,9 +165,12 @@ const ControllerSection = ({
 	}, []);
 
 	useEffect(() => {
-		console.log(leftStickRef.current);
 		leftStickRef.current = leftStick;
 	}, [leftStick]);
+
+	useEffect(() => {
+		rightStickRef.current = rightStick;
+	}, [rightStick]);
 
 	useEffect(() => {
 		const handleKeyDown = (event) => {
@@ -183,10 +187,18 @@ const ControllerSection = ({
 	}, []); //single run
 
 	useEffect(() => {
-		socket.emit('command360', leftStickRef.current);
+		console.log('left stick', leftStickRef.current);
+		socket.emit('command360-left', leftStickRef.current);
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [leftStickRef.current]);
+
+	useEffect(() => {
+		console.log('right stick', rightStickRef.current);
+		socket.emit('command360-right', rightStickRef.current);
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [rightStickRef.current]);
 
 	return (
 		<div className='w-full h-1/3 flex justify-between gap-4 flex-col md:flex-row'>

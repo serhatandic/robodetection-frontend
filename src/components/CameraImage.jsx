@@ -228,6 +228,10 @@ const CameraImage = ({
 	}, [socket, isConnected, selectedId, setCurrentlyTrackingId]);
 
 	useEffect(() => {
+		// if no rectangles, return
+		if (streamData.rectangles.length === 0) {
+			return;
+		}
 		// button == 'b' release the selected rectangle, button == 'a' select the highlighted rectangle. pad == 'right' highlight next rectangle, pad == 'left' highlight previous rectangle.
 		if (button === 'b') {
 			setSelectedId(null);
