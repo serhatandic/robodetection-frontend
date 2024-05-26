@@ -164,6 +164,7 @@ const ControllerSection = ({
 	}, []);
 
 	useEffect(() => {
+		console.log(leftStickRef.current);
 		leftStickRef.current = leftStick;
 	}, [leftStick]);
 

@@ -78,15 +78,14 @@ const useGamepad = () => {
 	const calculateStickVelocities = (x, y) => {
 		const magnitude = Math.sqrt(x * x + y * y);
 		const angle = Math.atan2(y, x) * (180 / Math.PI); // Convert to degrees
-		const xVelocity = magnitude * Math.cos(angle * (Math.PI / 180));
-		const yVelocity = magnitude * Math.sin(angle * (Math.PI / 180));
+		const xVelocity = magnitude * Math.sin(angle * (Math.PI / 180));
+		const yVelocity = magnitude * Math.cos(angle * (Math.PI / 180));
 		// drop the fractions for each
-
 		return {
-			angle: parseInt(angle),
-			xVelocity: parseInt(xVelocity),
-			yVelocity: parseInt(yVelocity),
-			magnitude: parseInt(magnitude),
+			angle: parseFloat(angle).toFixed(1),
+			xVelocity: -1 * parseFloat(xVelocity).toFixed(1),
+			yVelocity: -1 * parseFloat(yVelocity).toFixed(1),
+			magnitude: parseFloat(magnitude).toFixed(1),
 		};
 	};
 
