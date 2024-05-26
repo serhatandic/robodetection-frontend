@@ -187,14 +187,12 @@ const ControllerSection = ({
 	}, []); //single run
 
 	useEffect(() => {
-		console.log('left stick', leftStickRef.current);
 		socket.emit('command360-left', leftStickRef.current);
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [leftStickRef.current]);
 
 	useEffect(() => {
-		console.log('right stick', rightStickRef.current);
 		socket.emit('command360-right', rightStickRef.current);
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
