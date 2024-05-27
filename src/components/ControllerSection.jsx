@@ -194,6 +194,11 @@ const ControllerSection = ({
 		const magnitudeL = leftStickRef.current.magnitude;
 		const magnitudeR = rightStickRef.current.magnitude;
 
+		// if moved when tracking someone, set to null
+		if (xVelocityL || yVelocityL || xVelocityR || yVelocityR) {
+			setCurrentlyTrackingId(null);
+		}
+
 		socket.emit('command360', {
 			xVelocityL,
 			yVelocityL,
