@@ -161,6 +161,8 @@ const CameraImage = ({
 			context.fill();
 			context.strokeStyle =
 				rect.id === hoveredRectIndex ? 'yellow' : 'red'; // Highlight on hover
+			// stroke should be bolder
+			context.lineWidth = 4;
 			context.stroke();
 		});
 	}, [streamData, hoveredRectIndex, selectedId]); // Redraw when streamData changes

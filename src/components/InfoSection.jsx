@@ -71,7 +71,7 @@ const InfoSection = ({ currentlyTrackingId, socket, isConnected }) => {
 		4: `Continuing to follow target ${
 			currentlyTrackingId ? currentlyTrackingId : prev
 		}`,
-		5: `Operation timed out; continuing toward target ${
+		5: `Operation timed out, continuing toward target ${
 			currentlyTrackingId ? currentlyTrackingId : prev
 		}`,
 		6: `Target ${
@@ -80,9 +80,12 @@ const InfoSection = ({ currentlyTrackingId, socket, isConnected }) => {
 		7: `Initiating tracking of target ${
 			currentlyTrackingId ? currentlyTrackingId : prev
 		}`,
-		8: `Target reached; stopping tracking of target ${
+		8: `Target reached, stopping tracking of target ${
 			currentlyTrackingId ? currentlyTrackingId : prev
 		}`,
+		9: `Target ${
+			currentlyTrackingId ? currentlyTrackingId : prev
+		} is about to get out of sight`,
 	};
 
 	useEffect(() => {
