@@ -197,6 +197,7 @@ const ControllerSection = ({
 		// if moved when tracking someone, set to null
 		if (xVelocityL || yVelocityL || xVelocityR || yVelocityR) {
 			setCurrentlyTrackingId(null);
+			socket.emit('cancel_goals');
 		}
 
 		socket.emit('command360', {
