@@ -187,23 +187,24 @@ const ControllerSection = ({
 	}, []); //single run
 
 	useEffect(() => {
-		if (
-			Math.abs(leftStickRef.current.xVelocity) > 0.1 ||
-			Math.abs(leftStickRef.current.yVelocity) > 0.1
-		) {
-			socket.emit('command360-left', leftStickRef.current);
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [leftStickRef.current]);
+		const xVelocityL = leftStickRef.current.xVelocity;
+		const yVelocityL = leftStickRef.current.yVelocity;
+		const xVelocityR = rightStickRef.current.xVelocity;
+		const yVelocityR = rightStickRef.current.yVelocity;
+		const magnitudeL = leftStickRef.current.magnitude;
+		const magnitudeR = rightStickRef.current.magnitude;
 
-	useEffect(() => {
-		console.log(rightStickRef.current);
-		if (Math.abs(parseInt(rightStickRef.current.angle)) > 0) {
-			socket.emit('command360-right', rightStickRef.current);
-		}
+		socket.emit('command360', {
+			xVelocityL,
+			yVelocityL,
+			xVelocityR,
+			yVelocityR,
+			magnitudeL,
+			magnitudeR,
+		});
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [rightStickRef.current]);
+	}, [leftStickRef.current, rightStickRef.current]);
 
 	return (
 		<div className='w-full h-1/3 flex justify-between gap-4 flex-col md:flex-row'>
