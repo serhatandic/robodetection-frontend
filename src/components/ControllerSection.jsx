@@ -195,19 +195,24 @@ const ControllerSection = ({
 		const magnitudeR = rightStickRef.current.magnitude;
 
 		// if moved when tracking someone, set to null
-		if (xVelocityL || yVelocityL || xVelocityR || yVelocityR) {
+		if (
+			Math.abs(xVelocityL) > 0.1 ||
+			Math.abs(yVelocityL) > 0.1 ||
+			Math.abs(xVelocityR) > 0.1 ||
+			Math.abs(yVelocityR) > 0.1
+		) {
+			socket.emit('command360', {
+				xVelocityL,
+				yVelocityL,
+				xVelocityR,
+				yVelocityR,
+				magnitudeL,
+				magnitudeR,
+			});
+
 			setCurrentlyTrackingId(null);
 			socket.emit('cancel_goals');
 		}
-
-		socket.emit('command360', {
-			xVelocityL,
-			yVelocityL,
-			xVelocityR,
-			yVelocityR,
-			magnitudeL,
-			magnitudeR,
-		});
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [leftStickRef.current, rightStickRef.current]);
