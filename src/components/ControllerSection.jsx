@@ -187,13 +187,20 @@ const ControllerSection = ({
 	}, []); //single run
 
 	useEffect(() => {
-		socket.emit('command360-left', leftStickRef.current);
-
+		if (
+			Math.abs(leftStickRef.current.xVelocity) > 0.1 ||
+			Math.abs(leftStickRef.current.yVelocity) > 0.1
+		) {
+			socket.emit('command360-left', leftStickRef.current);
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [leftStickRef.current]);
 
 	useEffect(() => {
-		socket.emit('command360-right', rightStickRef.current);
+		console.log(rightStickRef.current);
+		if (Math.abs(parseInt(rightStickRef.current.angle)) > 0) {
+			socket.emit('command360-right', rightStickRef.current);
+		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [rightStickRef.current]);
